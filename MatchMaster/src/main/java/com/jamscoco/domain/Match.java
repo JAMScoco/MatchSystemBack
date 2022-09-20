@@ -30,71 +30,8 @@ public class Match extends BaseEntity
     private String name;
 
     /** 大赛logo（链接） */
-    @Excel(name = "大赛logo", readConverterExp = "链=接")
+    @Excel(name = "大赛logo链接", readConverterExp = "链接")
     private String logo;
-
-    /** 大赛组委会 */
-    private String organizingCommittee;
-
-    /** 地址 */
-    private String address;
-
-    /** 邮编 */
-    private String postcode;
-
-    /** 大赛投诉邮箱 */
-    private String email;
-
-    /** 专家委员会 */
-    private String expertCommittee;
-
-    /** 二维码（链接） */
-    private String qrCode;
-
-    /** 开始提交作品时间 */
-    private Date startSubmitTime;
-
-    /** 结束提交作品时间 */
-    private Date endSubmitTime;
-
-    /** 院系评审专家开始评审时间 */
-    private Date startReviewTimeDepartment;
-
-    /** 院系评审专家结束评审时间 */
-    private Date endReviewTimeDepartment;
-
-    /** 校级评审专家开始评审时间 */
-    private Date startReviewTimeSchool;
-
-    /** 校级评审专家结束评审时间 */
-    private Date endReviewTimeSchool;
-
-    /** 大赛通知（资料下载链接） */
-    private String competitionNotice;
-
-    /** 评审规则（资料下载链接） */
-    private String reviewRules;
-
-    /** 学生操作手册（资料下载链接） */
-    private String studentOperationManual;
-
-    /** 大赛指南（资料下载链接） */
-    private String competitionGuide;
-
-    /** 院级校级操作手册（资料下载链接） */
-    private String collegeSchoolOperationManual;
-
-    /** 商业合作邀请函（资料下载链接） */
-    private String businessCooperationInvitation;
-
-    /** 大赛评审手册（资料下载链接） */
-    private String competitionReviewManual;
-
-    /** 每个作品评审人数 */
-    private Long reviewNumber;
-
-    /** 删除标志（0代表存在 2代表删除） */
-    private String delFlag;
 
     /** 大赛开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -105,6 +42,93 @@ public class Match extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "大赛结束时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date endTime;
+
+    /** 大赛组委会 */
+    @Excel(name = "大赛组委会")
+    private String organizingCommittee;
+
+    /** 地址 */
+    @Excel(name = "地址")
+    private String address;
+
+    /** 邮编 */
+    @Excel(name = "邮编")
+    private String postcode;
+
+    /** 大赛投诉邮箱 */
+    @Excel(name = "大赛投诉邮箱")
+    private String email;
+
+    /** 专家委员会 */
+    @Excel(name = "专家委员会")
+    private String expertCommittee;
+
+    /** 二维码（链接） */
+    private String qrCode;
+
+    /** 开始提交作品时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "开始提交作品时间")
+    private Date startSubmitTime;
+
+    /** 结束提交作品时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "结束提交作品时间")
+    private Date endSubmitTime;
+
+    /** 院系评审专家开始评审时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "院系评审专家开始评审时间")
+    private Date startReviewTimeDepartment;
+
+    /** 院系评审专家结束评审时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "院系评审专家结束评审时间")
+    private Date endReviewTimeDepartment;
+
+    /** 校级评审专家开始评审时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "校级评审专家开始评审时间")
+    private Date startReviewTimeSchool;
+
+    /** 校级评审专家结束评审时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "校级评审专家结束评审时间")
+    private Date endReviewTimeSchool;
+
+    /** 大赛通知（资料下载链接） */
+    @Excel(name = "大赛通知（资料下载链接）")
+    private String competitionNotice;
+
+    /** 评审规则（资料下载链接） */
+    @Excel(name = "评审规则（资料下载链接）")
+    private String reviewRules;
+
+    /** 学生操作手册（资料下载链接） */
+    @Excel(name = "学生操作手册（资料下载链接）")
+    private String studentOperationManual;
+
+    /** 大赛指南（资料下载链接） */
+    @Excel(name = "大赛指南（资料下载链接）")
+    private String competitionGuide;
+
+    /** 院级校级操作手册（资料下载链接） */
+    @Excel(name = "院级校级操作手册（资料下载链接）")
+    private String collegeSchoolOperationManual;
+
+    /** 商业合作邀请函（资料下载链接） */
+    @Excel(name = "商业合作邀请函（资料下载链接）")
+    private String businessCooperationInvitation;
+
+    /** 大赛评审手册（资料下载链接） */
+    @Excel(name = "大赛评审手册（资料下载链接）")
+    private String competitionReviewManual;
+
+    /** 每个作品评审人数 */
+    private Long reviewNumber;
+
+    /** 删除标志（0代表存在 2代表删除） */
+    private String delFlag;
 
     public void setId(String id)
     {
