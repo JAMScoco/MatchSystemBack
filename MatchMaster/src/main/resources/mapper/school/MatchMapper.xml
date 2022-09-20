@@ -48,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="startTime != null "> and start_time &gt;= #{startTime}</if>
             <if test="endTime != null "> and end_time &lt;= #{endTime}</if>
+            end_time &lt;= NOW()
         </where>
     </select>
 
