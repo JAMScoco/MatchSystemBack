@@ -3,6 +3,7 @@ package ${packageName}.domain;
 #foreach ($import in $importList)
 import ${import};
 #end
+import com.baomidou.mybatisplus.annotation.TableName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -25,6 +26,7 @@ import com.ruoyi.common.core.domain.TreeEntity;
 #elseif($table.tree)
 #set($Entity="TreeEntity")
 #end
+@TableName("${tableName}")
 public class ${ClassName} extends ${Entity}
 {
     private static final long serialVersionUID = 1L;

@@ -1,13 +1,13 @@
 package ${packageName}.service.impl;
 
 import java.util.List;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 #foreach ($column in $columns)
 #if($column.javaField == 'createTime' || $column.javaField == 'updateTime')
 import com.ruoyi.common.utils.DateUtils;
 #break
 #end
 #end
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 #if($table.sub)
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import ${packageName}.service.I${ClassName}Service;
  * @date ${datetime}
  */
 @Service
-public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper,${className}> implements I${ClassName}Service
+public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper,${ClassName}> implements I${ClassName}Service
 {
 
     /**

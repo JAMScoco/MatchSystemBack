@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jamscoco.mapper.NewsMapper">
+
+    <resultMap type="News" id="NewsResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="picture"    column="picture"    />
+        <result property="pulishTime"    column="pulish_time"    />
+        <result property="type"    column="type"    />
+        <result property="owner"    column="owner"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectNewsVo">
+        select id, title, content, picture, pulish_time, type, owner, del_flag, create_by, create_time, update_by, update_time, remark from match_news
+    </sql>
+
+    <select id="selectNewsList" parameterType="News" resultMap="NewsResult">
+        <include refid="selectNewsVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="content != null  and content != ''"> and content like concat('%', #{content}, '%')</if>
+        </where>
+    </select>
+
+</mapper>
