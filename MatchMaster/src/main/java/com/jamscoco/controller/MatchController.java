@@ -38,7 +38,7 @@ public class MatchController extends BaseController
     /**
      * 查询赛事列表
      */
-    @PreAuthorize("@ss.hasPermi('school:match:list')")
+    @PreAuthorize("@ss.hasPermi('match:history:list')")
     @GetMapping("/list")
     public TableDataInfo list(Match match)
     {
@@ -50,7 +50,7 @@ public class MatchController extends BaseController
     /**
      * 导出赛事列表
      */
-    @PreAuthorize("@ss.hasPermi('school:match:export')")
+    @PreAuthorize("@ss.hasPermi('match:history:export')")
     @Log(title = "赛事", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, Match match)
@@ -63,7 +63,7 @@ public class MatchController extends BaseController
     /**
      * 获取赛事详细信息
      */
-    @PreAuthorize("@ss.hasPermi('school:match:query')")
+    @PreAuthorize("@ss.hasPermi('match:history:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") String id)
     {
@@ -73,7 +73,7 @@ public class MatchController extends BaseController
     /**
      * 新增赛事
      */
-    @PreAuthorize("@ss.hasPermi('school:match:add')")
+    @PreAuthorize("@ss.hasPermi('match:history:add')")
     @Log(title = "赛事", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody Match match)
@@ -84,7 +84,7 @@ public class MatchController extends BaseController
     /**
      * 修改赛事
      */
-    @PreAuthorize("@ss.hasPermi('school:match:edit')")
+    @PreAuthorize("@ss.hasPermi('match:history:edit')")
     @Log(title = "赛事", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody Match match)
@@ -95,7 +95,7 @@ public class MatchController extends BaseController
     /**
      * 删除赛事
      */
-    @PreAuthorize("@ss.hasPermi('school:match:remove')")
+    @PreAuthorize("@ss.hasPermi('match:history:remove')")
     @Log(title = "赛事", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable String[] ids)
