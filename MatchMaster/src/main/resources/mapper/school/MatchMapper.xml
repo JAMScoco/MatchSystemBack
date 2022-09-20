@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jamscoco.mapper.MatchMapper">
+
+    <resultMap type="com.jamscoco.domain.Match" id="MatchResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="logo"    column="logo"    />
+        <result property="organizingCommittee"    column="organizing_committee"    />
+        <result property="address"    column="address"    />
+        <result property="postcode"    column="postcode"    />
+        <result property="email"    column="email"    />
+        <result property="expertCommittee"    column="expert_committee"    />
+        <result property="qrCode"    column="qr_code"    />
+        <result property="startSubmitTime"    column="start_submit_time"    />
+        <result property="endSubmitTime"    column="end_submit_time"    />
+        <result property="startReviewTimeDepartment"    column="start_review_time_department"    />
+        <result property="endReviewTimeDepartment"    column="end_review_time_department"    />
+        <result property="startReviewTimeSchool"    column="start_review_time_school"    />
+        <result property="endReviewTimeSchool"    column="end_review_time_school"    />
+        <result property="competitionNotice"    column="competition_notice"    />
+        <result property="reviewRules"    column="review_rules"    />
+        <result property="studentOperationManual"    column="student_operation_manual"    />
+        <result property="competitionGuide"    column="competition_guide"    />
+        <result property="collegeSchoolOperationManual"    column="college_school_operation_manual"    />
+        <result property="businessCooperationInvitation"    column="business_cooperation_invitation"    />
+        <result property="competitionReviewManual"    column="competition_review_manual"    />
+        <result property="reviewNumber"    column="review_number"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+    </resultMap>
+
+    <sql id="selectMatchVo">
+        select id, name, logo, organizing_committee, address, postcode, email, expert_committee, qr_code, start_submit_time, end_submit_time, start_review_time_department, end_review_time_department, start_review_time_school, end_review_time_school, competition_notice, review_rules, student_operation_manual, competition_guide, college_school_operation_manual, business_cooperation_invitation, competition_review_manual, review_number, del_flag, create_by, create_time, update_by, update_time, remark, start_time, end_time from match_info
+    </sql>
+
+    <select id="selectMatchList" parameterType="com.jamscoco.domain.Match" resultMap="MatchResult">
+        <include refid="selectMatchVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="startTime != null "> and start_time &gt;= #{startTime}</if>
+            <if test="endTime != null "> and end_time &lt;= #{endTime}</if>
+        </where>
+    </select>
+
+</mapper>
