@@ -1,6 +1,9 @@
 package com.jamscoco.service.impl;
 
+import java.util.Date;
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import com.jamscoco.mapper.MatchMapper;
@@ -27,5 +30,10 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper,Match> implements 
     public List<Match> selectHistoryMatchList(Match match)
     {
         return baseMapper.selectHistoryMatchList(match);
+    }
+
+    @Override
+    public Match getCurrentMatch() {
+        return baseMapper.selectOne(new QueryWrapper<Match>().ge("end_time", new Date()));
     }
 }

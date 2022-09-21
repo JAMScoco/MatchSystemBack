@@ -3,6 +3,9 @@ package com.jamscoco.controller;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +31,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author jamscoco
  * @date 2022-09-20
  */
+@Api("赛事信息管理")
 @RestController
 @RequestMapping("/match/history")
 public class MatchController extends BaseController
@@ -102,4 +106,14 @@ public class MatchController extends BaseController
     {
         return toAjax(matchService.removeByIds(Arrays.asList(ids)));
     }
+
+    /**
+     * 查询当前赛事
+     */
+    @ApiOperation("查询当前赛事")
+    @GetMapping("/getCurrentMatch")
+    public AjaxResult getCurrentMatch(){
+        return AjaxResult.success(matchService.getCurrentMatch());
+    }
+
 }

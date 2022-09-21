@@ -19,4 +19,6 @@ public interface IMatchService extends IService<Match>
      * @return 赛事集合（不包括当前正在进行的赛事）
      */
     public List<Match> selectHistoryMatchList(Match match);
+
+    Match getCurrentMatch();
 }

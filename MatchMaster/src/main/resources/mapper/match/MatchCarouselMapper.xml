@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jamscoco.mapper.MatchCarouselMapper">
+
+    <resultMap type="com.jamscoco.domain.MatchCarousel" id="MatchCarouselResult">
+        <result property="id"    column="id"    />
+        <result property="url"    column="url"    />
+        <result property="link"    column="link"    />
+        <result property="matchId"    column="match_id"    />
+        <result property="sort"    column="sort"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMatchCarouselVo">
+        select id, url, link, match_id, sort, del_flag, create_by, create_time, update_by, update_time, remark from match_carousel
+    </sql>
+
+    <select id="selectMatchCarouselList" parameterType="com.jamscoco.domain.MatchCarousel" resultMap="MatchCarouselResult">
+        <include refid="selectMatchCarouselVo"/>
+        <where>
+        </where>
+    </select>
+
+</mapper>
