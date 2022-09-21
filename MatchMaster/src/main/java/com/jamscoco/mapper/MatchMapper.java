@@ -15,11 +15,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface MatchMapper extends BaseMapper<Match>
 {
     /**
-     * 查询赛事列表
+     * 查询赛事列表（不包括当前正在进行的赛事）
      *
      * @param match 赛事
      * @return 赛事集合
      */
-    public List<Match> selectMatchList(Match match);
+    public List<Match> selectHistoryMatchList(Match match);
 
 }

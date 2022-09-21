@@ -13,10 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IMatchService extends IService<Match>
 {
     /**
-     * 查询赛事列表
+     * 查询历史赛事列表（不包括当前正在进行的赛事）
      *
      * @param match 赛事
-     * @return 赛事集合
+     * @return 赛事集合（不包括当前正在进行的赛事）
      */
-    public List<Match> selectMatchList(Match match);
+    public List<Match> selectHistoryMatchList(Match match);
 }

@@ -36,26 +36,26 @@ public class MatchController extends BaseController
     private IMatchService matchService;
 
     /**
-     * 查询赛事列表
+     * 查询历史赛事列表（不包括当前正在进行的赛事）
      */
     @PreAuthorize("@ss.hasPermi('match:history:list')")
     @GetMapping("/list")
     public TableDataInfo list(Match match)
     {
         startPage();
-        List<Match> list = matchService.selectMatchList(match);
+        List<Match> list = matchService.selectHistoryMatchList(match);
         return getDataTable(list);
     }
 
     /**
-     * 导出赛事列表
+     * 导出历史赛事列表
      */
     @PreAuthorize("@ss.hasPermi('match:history:export')")
     @Log(title = "赛事", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, Match match)
     {
-        List<Match> list = matchService.selectMatchList(match);
+        List<Match> list = matchService.selectHistoryMatchList(match);
         ExcelUtil<Match> util = new ExcelUtil<Match>(Match.class);
         util.exportExcel(response, list, "赛事数据");
     }
