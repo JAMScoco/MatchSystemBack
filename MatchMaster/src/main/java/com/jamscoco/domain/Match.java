@@ -30,7 +30,7 @@ public class Match extends BaseEntity
     private String name;
 
     /** 大赛logo（链接） */
-    @Excel(name = "大赛logo链接", readConverterExp = "链接")
+    @Excel(name = "大赛logo链接")
     private String logo;
 
     /** 大赛开始时间 */
@@ -68,32 +68,32 @@ public class Match extends BaseEntity
 
     /** 开始提交作品时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "开始提交作品时间")
+    @Excel(name = "开始提交作品时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date startSubmitTime;
 
     /** 结束提交作品时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "结束提交作品时间")
+    @Excel(name = "结束提交作品时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date endSubmitTime;
 
     /** 院系评审专家开始评审时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "院系评审专家开始评审时间")
+    @Excel(name = "院系评审专家开始评审时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date startReviewTimeDepartment;
 
     /** 院系评审专家结束评审时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "院系评审专家结束评审时间")
+    @Excel(name = "院系评审专家结束评审时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date endReviewTimeDepartment;
 
     /** 校级评审专家开始评审时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "校级评审专家开始评审时间")
+    @Excel(name = "校级评审专家开始评审时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date startReviewTimeSchool;
 
     /** 校级评审专家结束评审时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "校级评审专家结束评审时间")
+    @Excel(name = "校级评审专家结束评审时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date endReviewTimeSchool;
 
     /** 大赛通知（资料下载链接） */
