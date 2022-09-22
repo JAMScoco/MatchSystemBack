@@ -1,8 +1,13 @@
 package com.jamscoco.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.jamscoco.domain.Match;
+import com.jamscoco.service.IMatchService;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +40,9 @@ public class NewsController extends BaseController
     @Autowired
     private INewsService newsService;
 
+    @Autowired
+    private IMatchService matchService;
+
     /**
      * 查询动态管理列表
      */
@@ -42,7 +50,18 @@ public class NewsController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(News news)
     {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch){
+            return getDataTable(new ArrayList<>());
+        }
         startPage();
+        long roleType = getRoleType();
+        news.setType(roleType);
+        if (roleType == 0L){
+            news.setOwner(currentMatch.getId());
+        }else {
+            news.setOwner(String.valueOf(getLoginUser().getDeptId()));
+        }
         List<News> list = newsService.selectNewsList(news);
         return getDataTable(list);
     }
@@ -55,6 +74,7 @@ public class NewsController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, News news)
     {
+
         List<News> list = newsService.selectNewsList(news);
         ExcelUtil<News> util = new ExcelUtil<News>(News.class);
         util.exportExcel(response, list, "动态管理数据");
@@ -71,13 +91,24 @@ public class NewsController extends BaseController
     }
 
     /**
-     * 新增动态管理
+     * 新增动态
      */
     @PreAuthorize("@ss.hasPermi('school:news:add')")
     @Log(title = "动态管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody News news)
     {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch){
+            return AjaxResult.error("当前没有正在进行中的赛事，不能添加动态");
+        }
+        long roleType = getRoleType();
+        news.setType(roleType);
+        if (roleType == 0L){
+            news.setOwner(currentMatch.getId());
+        }else {
+            news.setOwner(String.valueOf(getLoginUser().getDeptId()));
+        }
         return toAjax(newsService.save(news));
     }
 

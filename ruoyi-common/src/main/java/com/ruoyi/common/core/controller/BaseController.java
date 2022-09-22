@@ -3,6 +3,8 @@ package com.ruoyi.common.core.controller;
 import java.beans.PropertyEditorSupport;
 import java.util.Date;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.entity.SysRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.WebDataBinder;
@@ -23,7 +25,7 @@ import com.ruoyi.common.utils.sql.SqlUtil;
 
 /**
  * web层通用数据处理
- * 
+ *
  * @author ruoyi
  */
 public class BaseController
@@ -124,7 +126,7 @@ public class BaseController
 
     /**
      * 响应返回结果
-     * 
+     *
      * @param rows 影响行数
      * @return 操作结果
      */
@@ -135,7 +137,7 @@ public class BaseController
 
     /**
      * 响应返回结果
-     * 
+     *
      * @param result 结果
      * @return 操作结果
      */
@@ -182,5 +184,21 @@ public class BaseController
     public String getUsername()
     {
         return getLoginUser().getUsername();
+    }
+
+    /**
+     * 获取身份类型 0 校级管理 1 院级管理
+     * @return
+     */
+    public Long getRoleType(){
+        long type = 0L;
+        List<SysRole> roles = getLoginUser().getUser().getRoles();
+        for (SysRole role : roles) {
+            if (role.getRoleName().equals("学院管理员")){
+                type = 1L;
+            }
+            break;
+        }
+        return type;
     }
 }

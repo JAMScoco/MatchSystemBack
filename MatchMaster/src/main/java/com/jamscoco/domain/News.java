@@ -34,7 +34,7 @@ public class News extends BaseEntity
     private String content;
 
     /** 封面图片（链接） */
-    @Excel(name = "封面图片", readConverterExp = "链=接")
+    @Excel(name = "封面图片")
     private String picture;
 
     /** 发布时间 */
@@ -42,10 +42,10 @@ public class News extends BaseEntity
     @Excel(name = "发布时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date pulishTime;
 
-    /** 类型：0 代表校级动态，1代表院级动态 */
+    /** 类型：0 代表校级动态，1 代表院级动态 */
     private Long type;
 
-    /** 所属：当type为0时，该字段为大赛ID；当type为1时，该字段为院系名称 */
+    /** 所属：当type为0时，该字段为大赛ID；当type为1时，该字段为院系id */
     private String owner;
 
     /** 删除标志（0代表存在 2代表删除） */
