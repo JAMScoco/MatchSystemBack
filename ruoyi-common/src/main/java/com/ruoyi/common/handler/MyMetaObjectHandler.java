@@ -12,8 +12,8 @@ import static com.ruoyi.common.utils.SecurityUtils.getUsername;
 public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
-        this.setFieldValByName("createdBy", getUsername(), metaObject);
-        this.setFieldValByName("createdTime", new Date(), metaObject);
+        this.setFieldValByName("createBy", getUsername(), metaObject);
+        this.setFieldValByName("createTime", new Date(), metaObject);
         this.setFieldValByName("updateBy", getUsername(),metaObject);
         this.setFieldValByName("updateTime", new Date(), metaObject);
         this.setFieldValByName("delFlag", "0", metaObject);
