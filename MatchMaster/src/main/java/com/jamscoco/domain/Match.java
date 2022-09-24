@@ -47,6 +47,10 @@ public class Match extends BaseEntity
     @Excel(name = "大赛组委会")
     private String organizingCommittee;
 
+    /** 专家委员会 */
+    @Excel(name = "专家委员会")
+    private String expertCommittee;
+
     /** 地址 */
     @Excel(name = "地址")
     private String address;
@@ -58,10 +62,6 @@ public class Match extends BaseEntity
     /** 大赛投诉邮箱 */
     @Excel(name = "大赛投诉邮箱")
     private String email;
-
-    /** 专家委员会 */
-    @Excel(name = "专家委员会")
-    private String expertCommittee;
 
     /** 二维码（链接） */
     private String qrCode;
