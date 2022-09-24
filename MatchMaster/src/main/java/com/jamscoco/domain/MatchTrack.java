@@ -1,12 +1,16 @@
 package com.jamscoco.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.jamscoco.vo.TrackInfoVo;
+import com.ruoyi.common.annotation.Excel;
+import com.ruoyi.common.core.domain.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import com.ruoyi.common.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.ruoyi.common.core.domain.BaseEntity;
+
+import java.util.List;
 
 /**
  * 赛事对应的赛道信息对象 match_track
@@ -33,6 +37,20 @@ public class MatchTrack extends BaseEntity
     /** 奖项设置 */
     @Excel(name = "奖项设置")
     private String award;
+
+    /**
+     * 赛道的组别类别列表
+     */
+    @TableField(exist = false)
+    private List<TrackInfoVo> children;
+
+    public List<TrackInfoVo> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<TrackInfoVo> children) {
+        this.children = children;
+    }
 
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;

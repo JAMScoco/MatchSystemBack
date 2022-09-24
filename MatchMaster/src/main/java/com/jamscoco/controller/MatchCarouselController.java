@@ -48,9 +48,15 @@ public class MatchCarouselController extends BaseController
     public TableDataInfo list(MatchCarousel matchCarousel)
     {
         startPage();
-        matchCarousel.setMatchId(matchService.getCurrentMatch().getId());
-        List<MatchCarousel> list = matchCarouselService.selectMatchCarouselList(matchCarousel);
-        return getDataTable(list);
+        Match currentMatch = matchService.getCurrentMatch();
+        if(null == currentMatch){
+            return new TableDataInfo(null,0);
+        }else {
+            matchCarousel.setMatchId(currentMatch.getId());
+            List<MatchCarousel> list = matchCarouselService.selectMatchCarouselList(matchCarousel);
+            return getDataTable(list);
+        }
+
     }
 
     /**
