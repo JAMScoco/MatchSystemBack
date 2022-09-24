@@ -87,6 +87,7 @@ public class MatchGroupController extends BaseController
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable String[] ids)
     {
+        System.out.println(99999);
         return toAjax(matchGroupService.removeByIds(Arrays.asList(ids)));
     }
 }

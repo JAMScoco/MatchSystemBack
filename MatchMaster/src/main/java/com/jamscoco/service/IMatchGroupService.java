@@ -19,4 +19,11 @@ public interface IMatchGroupService extends IService<MatchGroup>
      * @return 组别集合
      */
     public List<MatchGroup> selectMatchGroupList(MatchGroup matchGroup);
+
+    /**
+     * 删除trackId为传进来的id的组别
+     * @param trackId
+     * @return
+     */
+    boolean deleteGroupByTrackId(String trackId);
 }

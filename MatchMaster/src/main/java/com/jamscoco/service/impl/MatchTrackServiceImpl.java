@@ -53,31 +53,35 @@ public class MatchTrackServiceImpl extends ServiceImpl<MatchTrackMapper, MatchTr
             List<TrackInfoVo> groupChildrenList = new ArrayList<>();
             for (MatchGroup matchGroup : groupList) {
                 TrackInfoVo trackInfoVoGroup = new TrackInfoVo();
+                trackInfoVoGroup.setId(matchGroup.getId());
                 trackInfoVoGroup.setTrackId(matchTrack.getId());
                 trackInfoVoGroup.setName(matchGroup.getName());
+                trackInfoVoGroup.setRemark(matchGroup.getRemark());
                 groupChildrenList.add(trackInfoVoGroup);
             }
             List<MatchCategory> categoryList = matchCategoryMapper.selectList(new QueryWrapper<MatchCategory>().eq("track_id", matchTrack.getId()));
             List<TrackInfoVo> categoryChildrenList = new ArrayList<>();
             for (MatchCategory matchCategory : categoryList) {
                 TrackInfoVo trackInfoVoCategory = new TrackInfoVo();
+                trackInfoVoCategory.setId(matchCategory.getId());
                 trackInfoVoCategory.setTrackId(matchTrack.getId());
                 trackInfoVoCategory.setName(matchCategory.getName());
+                trackInfoVoCategory.setRemark(matchCategory.getRemark());
                 categoryChildrenList.add(trackInfoVoCategory);
             }
 
-            TrackInfoVo trackInfoVo1 = new TrackInfoVo();
-            trackInfoVo1.setTrackId(matchTrack.getId());
-            trackInfoVo1.setName("组别");
-            trackInfoVo1.setChildren(groupChildrenList);
-            TrackInfoVo trackInfoVo2 = new TrackInfoVo();
-            trackInfoVo2.setTrackId(matchTrack.getId());
-            trackInfoVo2.setName("类别");
-            trackInfoVo2.setChildren(categoryChildrenList);
+            TrackInfoVo groupInfo = new TrackInfoVo();
+            groupInfo.setTrackId(matchTrack.getId());
+            groupInfo.setName("组别");
+            groupInfo.setChildren(groupChildrenList);
+            TrackInfoVo categoryInfo = new TrackInfoVo();
+            categoryInfo.setTrackId(matchTrack.getId());
+            categoryInfo.setName("类别");
+            categoryInfo.setChildren(categoryChildrenList);
 
             List<TrackInfoVo> childrenList = new ArrayList<>();
-            childrenList.add(trackInfoVo1);
-            childrenList.add(trackInfoVo2);
+            childrenList.add(groupInfo);
+            childrenList.add(categoryInfo);
             matchTrack.setChildren(childrenList);
         }
 

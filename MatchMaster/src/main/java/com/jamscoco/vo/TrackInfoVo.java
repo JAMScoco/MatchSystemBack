@@ -10,7 +10,9 @@ import java.util.List;
 @Data
 public class TrackInfoVo {
 
+    private String id;
     private String trackId;
     private String name;
+    private String remark;
     private List<TrackInfoVo> children;
 }

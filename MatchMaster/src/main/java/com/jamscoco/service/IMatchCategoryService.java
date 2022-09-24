@@ -19,4 +19,11 @@ public interface IMatchCategoryService extends IService<MatchCategory>
      * @return 类别集合
      */
     public List<MatchCategory> selectMatchCategoryList(MatchCategory matchCategory);
+
+    /**
+     * 删除trackId为传进来的id的类别
+     * @param trackId
+     * @return
+     */
+    boolean deleteCategoryByTrackId(String trackId);
 }

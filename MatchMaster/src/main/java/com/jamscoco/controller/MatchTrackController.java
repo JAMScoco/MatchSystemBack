@@ -1,9 +1,12 @@
 package com.jamscoco.controller;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.jamscoco.domain.Match;
+import com.jamscoco.service.IMatchCategoryService;
+import com.jamscoco.service.IMatchGroupService;
 import com.jamscoco.service.IMatchService;
 import com.jamscoco.vo.TrackInfoVo;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,18 +41,23 @@ public class MatchTrackController extends BaseController
     private IMatchTrackService matchTrackService;
     @Autowired
     private IMatchService matchService;
+    @Autowired
+    private IMatchGroupService matchGroupService;
+    @Autowired
+    private IMatchCategoryService matchCategoryService;
 
     /**
      * 查询赛道组别类别信息
      */
     @PreAuthorize("@ss.hasPermi('match:history:edit')")
     @GetMapping("/getTrackInfo")
-    public List<MatchTrack> getTrackInfo(){
+    public AjaxResult getTrackInfo(){
         Match currentMatch = matchService.getCurrentMatch();
         if(null == currentMatch){
-            return null;
+            return AjaxResult.error("没有正在进行的赛事");
         }else {
-            return matchTrackService.getTrackInfo(currentMatch.getId());
+            List<MatchTrack> trackList = matchTrackService.getTrackInfo(currentMatch.getId());
+            return AjaxResult.success(trackList);
         }
     }
 
@@ -114,9 +122,14 @@ public class MatchTrackController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('match:history:edit')")
     @Log(title = "赛事对应的赛道信息", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable String[] ids)
+	@DeleteMapping("/{id}")
+    public AjaxResult remove(@PathVariable String id)
     {
-        return toAjax(matchTrackService.removeByIds(Arrays.asList(ids)));
+        if(matchGroupService.deleteGroupByTrackId(id) && matchCategoryService.deleteCategoryByTrackId(id)){
+            return toAjax(matchTrackService.removeById(id));
+        }else {
+            return AjaxResult.error("删除失败！");
+        }
+
     }
 }
