@@ -111,6 +111,7 @@ public class MatchController extends BaseController
     /**
      * 查询当前赛事
      */
+    @Anonymous
     @ApiOperation("查询当前赛事")
     @GetMapping("/getCurrentMatch")
     public AjaxResult getCurrentMatch(){
@@ -119,7 +120,6 @@ public class MatchController extends BaseController
 
     /**
      * 主页显示信息查询
-     * @return
      */
     @Anonymous
     @GetMapping("/getIndexInfo")

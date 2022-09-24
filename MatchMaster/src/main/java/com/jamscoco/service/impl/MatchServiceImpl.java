@@ -159,7 +159,7 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
         QueryWrapper<News> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "title", "picture", "create_time");
         queryWrapper.eq("type", 1L);
-        queryWrapper.orderByAsc("create_time");
+        queryWrapper.orderByDesc("create_time");
         queryWrapper.last("limit 3");
         return newsMapper.selectList(queryWrapper);
     }
@@ -169,6 +169,7 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
         queryWrapper.select("id", "title", "picture", "create_time");
         queryWrapper.eq("type", 0L);
         queryWrapper.eq("owner", matchId);
+        queryWrapper.orderByDesc("create_time");
         queryWrapper.last("limit 3");
         return newsMapper.selectList(queryWrapper);
     }
