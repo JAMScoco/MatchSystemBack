@@ -2,7 +2,10 @@ package com.jamscoco.controller;
 
 import java.util.Arrays;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
+
+import com.jamscoco.domain.Match;
+import com.jamscoco.service.IMatchService;
+import com.jamscoco.vo.TrackInfoVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +22,6 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.jamscoco.domain.MatchTrack;
 import com.jamscoco.service.IMatchTrackService;
-import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
@@ -34,6 +36,22 @@ public class MatchTrackController extends BaseController
 {
     @Autowired
     private IMatchTrackService matchTrackService;
+    @Autowired
+    private IMatchService matchService;
+
+    /**
+     * 查询赛道组别类别信息
+     */
+    @PreAuthorize("@ss.hasPermi('match:history:edit')")
+    @GetMapping("/getTrackInfo")
+    public List<MatchTrack> getTrackInfo(){
+        Match currentMatch = matchService.getCurrentMatch();
+        if(null == currentMatch){
+            return null;
+        }else {
+            return matchTrackService.getTrackInfo(currentMatch.getId());
+        }
+    }
 
     /**
      * 查询赛事对应的赛道信息列表
@@ -43,8 +61,14 @@ public class MatchTrackController extends BaseController
     public TableDataInfo list(MatchTrack matchTrack)
     {
         startPage();
-        List<MatchTrack> list = matchTrackService.selectMatchTrackList(matchTrack);
-        return getDataTable(list);
+        Match currentMatch = matchService.getCurrentMatch();
+        if(null == currentMatch){
+            return new TableDataInfo(null,0);
+        }else {
+            matchTrack.setMatchId(currentMatch.getId());
+            List<MatchTrack> list = matchTrackService.selectMatchTrackList(matchTrack);
+            return getDataTable(list);
+        }
     }
 
     /**
@@ -65,7 +89,13 @@ public class MatchTrackController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody MatchTrack matchTrack)
     {
-        return toAjax(matchTrackService.save(matchTrack));
+        Match currentMatch = matchService.getCurrentMatch();
+        if(null == currentMatch){
+            return AjaxResult.error("当前没有正在进行的赛事");
+        }else {
+            matchTrack.setMatchId(currentMatch.getId());
+            return toAjax(matchTrackService.save(matchTrack));
+        }
     }
 
     /**
