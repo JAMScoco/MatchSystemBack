@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.annotation.Anonymous;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -114,6 +115,20 @@ public class MatchController extends BaseController
     @GetMapping("/getCurrentMatch")
     public AjaxResult getCurrentMatch(){
         return AjaxResult.success(matchService.getCurrentMatch());
+    }
+
+    /**
+     * 主页显示信息查询
+     * @return
+     */
+    @Anonymous
+    @GetMapping("/getIndexInfo")
+    public AjaxResult getIndexInfo(){
+        Match currentMatch = matchService.getCurrentMatch();
+        if(null  == currentMatch){
+            return AjaxResult.error("当前没有进行中的赛事");
+        }
+        return AjaxResult.success(matchService.getIndexInfo(currentMatch));
     }
 
 }
