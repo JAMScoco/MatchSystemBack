@@ -25,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectMatchCarouselList" parameterType="com.jamscoco.domain.MatchCarousel" resultMap="MatchCarouselResult">
         <include refid="selectMatchCarouselVo"/>
         <where>
+            and match_id = #{matchId}
         </where>
     </select>
 

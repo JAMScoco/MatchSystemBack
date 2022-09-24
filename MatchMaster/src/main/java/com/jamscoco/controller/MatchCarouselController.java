@@ -3,6 +3,9 @@ package com.jamscoco.controller;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.jamscoco.domain.Match;
+import com.jamscoco.service.IMatchService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +37,8 @@ public class MatchCarouselController extends BaseController
 {
     @Autowired
     private IMatchCarouselService matchCarouselService;
+    @Autowired
+    private IMatchService matchService;
 
     /**
      * 查询发布赛事的轮播图列表
@@ -43,6 +48,7 @@ public class MatchCarouselController extends BaseController
     public TableDataInfo list(MatchCarousel matchCarousel)
     {
         startPage();
+        matchCarousel.setMatchId(matchService.getCurrentMatch().getId());
         List<MatchCarousel> list = matchCarouselService.selectMatchCarouselList(matchCarousel);
         return getDataTable(list);
     }
@@ -65,7 +71,13 @@ public class MatchCarouselController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody MatchCarousel matchCarousel)
     {
-        return toAjax(matchCarouselService.save(matchCarousel));
+        Match currentMatch = matchService.getCurrentMatch();
+        if(currentMatch == null){
+            return AjaxResult.error("当前没有正在进行的赛事");
+        }else {
+            matchCarousel.setMatchId(currentMatch.getId());
+            return toAjax(matchCarouselService.save(matchCarousel));
+        }
     }
 
     /**
