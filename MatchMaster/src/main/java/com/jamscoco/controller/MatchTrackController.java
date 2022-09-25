@@ -9,6 +9,7 @@ import com.jamscoco.service.IMatchCategoryService;
 import com.jamscoco.service.IMatchGroupService;
 import com.jamscoco.service.IMatchService;
 import com.jamscoco.vo.TrackInfoVo;
+import com.ruoyi.common.annotation.Anonymous;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +50,7 @@ public class MatchTrackController extends BaseController
     /**
      * 查询赛道组别类别信息
      */
-    @PreAuthorize("@ss.hasPermi('match:history:edit')")
+    @Anonymous
     @GetMapping("/getTrackInfo")
     public AjaxResult getTrackInfo(){
         Match currentMatch = matchService.getCurrentMatch();

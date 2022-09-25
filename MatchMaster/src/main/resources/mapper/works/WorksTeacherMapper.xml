@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jamscoco.mapper.WorksTeacherMapper">
+
+    <resultMap type="com.jamscoco.domain.WorksTeacher" id="WorksTeacherResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="number"    column="number"    />
+        <result property="gender"    column="gender"    />
+        <result property="level"    column="level"    />
+        <result property="departmentId"    column="department_id"    />
+        <result property="major"    column="major"    />
+        <result property="phone"    column="phone"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWorksTeacherVo">
+        select id, name, number, gender, level, department_id, major, phone, del_flag, create_by, create_time, update_by, update_time, remark from works_teacher
+    </sql>
+
+    <select id="selectWorksTeacherList" parameterType="com.jamscoco.domain.WorksTeacher" resultMap="WorksTeacherResult">
+        <include refid="selectWorksTeacherVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="number != null  and number != ''"> and number = #{number}</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="level != null  and level != ''"> and level = #{level}</if>
+            <if test="departmentId != null  and departmentId != ''"> and department_id = #{departmentId}</if>
+            <if test="major != null  and major != ''"> and major = #{major}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+        </where>
+    </select>
+
+</mapper>
