@@ -3,6 +3,8 @@ package com.jamscoco.service;
 import java.util.List;
 import com.jamscoco.domain.Match;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jamscoco.dto.MatchFileDto;
+import com.jamscoco.vo.FileInfoVo;
 import com.jamscoco.vo.IndexInfoVo;
 
 /**
@@ -33,4 +35,25 @@ public interface IMatchService extends IService<Match>
      * @return
      */
     IndexInfoVo getIndexInfo(Match currentMatch);
+
+    /**
+     * 查询大赛相关文件
+     * @param match
+     * @return
+     */
+    List<FileInfoVo> getFiles(Match match);
+
+    /**
+     * 新增赛事文件
+     * @param matchFileDto
+     * @return
+     */
+    boolean addMatchFile(MatchFileDto matchFileDto);
+
+    /**
+     * 删除赛事文件
+     * @param matchFileDto
+     * @return
+     */
+    boolean delMatchFile(MatchFileDto matchFileDto);
 }
