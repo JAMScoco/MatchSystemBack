@@ -1,12 +1,17 @@
 package com.jamscoco.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jamscoco.domain.Match;
 import com.jamscoco.service.IMatchService;
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import lombok.Data;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +39,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  */
 @RestController
 @RequestMapping("/works/work")
-public class WorksController extends BaseController
-{
+public class WorksController extends BaseController {
     @Autowired
     private IWorksService worksService;
 
@@ -47,8 +51,7 @@ public class WorksController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('works:work:list')")
     @GetMapping("/list")
-    public TableDataInfo list(Works works)
-    {
+    public TableDataInfo list(Works works) {
         startPage();
         List<Works> list = worksService.selectWorksList(works);
         return getDataTable(list);
@@ -60,8 +63,7 @@ public class WorksController extends BaseController
     @PreAuthorize("@ss.hasPermi('works:work:export')")
     @Log(title = "作品", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, Works works)
-    {
+    public void export(HttpServletResponse response, Works works) {
         List<Works> list = worksService.selectWorksList(works);
         ExcelUtil<Works> util = new ExcelUtil<Works>(Works.class);
         util.exportExcel(response, list, "作品数据");
@@ -72,8 +74,7 @@ public class WorksController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('works:work:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") String id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") String id) {
         return AjaxResult.success(worksService.getById(id));
     }
 
@@ -83,21 +84,75 @@ public class WorksController extends BaseController
     @PreAuthorize("@ss.hasRole('student')")
     @Log(title = "作品", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody Works works)
-    {
+    public AjaxResult add(@RequestBody Works works) {
+        //1.学生是否完善个人信息
+        SysUser user = getLoginUser().getUser();
+        if (user.getTrueName() == null || user.getSno() == null || user.getPhonenumber() == null) {
+            return AjaxResult.error("个人信息不完善，请先完善个人信息");
+        }
+        //2.当前是否有进行中的赛事
         Match currentMatch = matchService.getCurrentMatch();
-        if (null == currentMatch){
+        if (null == currentMatch) {
             return AjaxResult.error("当前没有正在进行中的赛事，不能提交作品");
+        }
+        //3. 当前是否在报名时间内
+        Date now = new Date();
+        if (DateUtil.compare(now, currentMatch.getStartSubmitTime()) < 0) {
+            return AjaxResult.success("未到报名时间，不能提交作品");
+        }
+        if (DateUtil.compare(now, currentMatch.getEndSubmitTime()) > 0) {
+            return AjaxResult.success("报名时间已截止，不能提交作品");
+        }
+        //4.该学生是否在本次赛事中提交过作品
+        QueryWrapper<Works> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", getUserId());
+        queryWrapper.eq("match_id", currentMatch.getId());
+        Works query = worksService.getOne(queryWrapper);
+        if (query != null){
+            return AjaxResult.error("您在本次大赛中已经提交过项目");
         }
         works.setMatchId(currentMatch.getId());
         works.setUserId(String.valueOf(getUserId()));
         String msg = worksService.addWorks(works);
-        if (!Constants.SUCCESS.equals(msg)){
+        if (!Constants.SUCCESS.equals(msg)) {
             return AjaxResult.error(msg);
-        }else {
+        } else {
             return AjaxResult.success();
         }
     }
+
+    @PreAuthorize("@ss.hasRole('student')")
+    @GetMapping("validCommit")
+    public AjaxResult validCommit() {
+        //1.学生是否完善个人信息
+        SysUser user = getLoginUser().getUser();
+        if (user.getTrueName() == null || user.getSno() == null || user.getPhonenumber() == null) {
+            return AjaxResult.success("个人信息不完善，请先完善个人信息");
+        }
+        //2.当前是否有进行中的赛事
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.success("当前没有正在进行中的赛事，不能提交作品");
+        }
+        //3. 当前是否在报名时间内
+        Date now = new Date();
+        if (DateUtil.compare(now, currentMatch.getStartSubmitTime()) < 0) {
+            return AjaxResult.success("未到报名时间，不能提交作品");
+        }
+        if (DateUtil.compare(now, currentMatch.getEndSubmitTime()) > 0) {
+            return AjaxResult.success("报名时间已截止，不能提交作品");
+        }
+        //4.该学生是否在本次赛事中提交过作品
+        QueryWrapper<Works> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", getUserId());
+        queryWrapper.eq("match_id", currentMatch.getId());
+        Works query = worksService.getOne(queryWrapper);
+        if (query != null){
+            return AjaxResult.success("您在本次大赛中已经提交过作品，请直接查看");
+        }
+        return AjaxResult.success("valid");
+    }
+
 
     /**
      * 修改作品
@@ -105,8 +160,7 @@ public class WorksController extends BaseController
     @PreAuthorize("@ss.hasPermi('works:work:edit')")
     @Log(title = "作品", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody Works works)
-    {
+    public AjaxResult edit(@RequestBody Works works) {
         return toAjax(worksService.updateById(works));
     }
 
@@ -115,9 +169,8 @@ public class WorksController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('works:work:remove')")
     @Log(title = "作品", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable String[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable String[] ids) {
         return toAjax(worksService.removeByIds(Arrays.asList(ids)));
     }
 }

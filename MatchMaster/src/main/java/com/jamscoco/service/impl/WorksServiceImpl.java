@@ -49,13 +49,6 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
     @Override
     @Transactional
     public String addWorks(Works works) {
-        QueryWrapper<Works> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", works.getUserId());
-        queryWrapper.eq("match_id", works.getMatchId());
-        Works query = baseMapper.selectOne(queryWrapper);
-        if (query != null) {
-            return "您在本次大赛中已经提交过项目";
-        }
         String invalidMemberResult = invalidMember(works.getMemberList());
         if (!Constants.SUCCESS.equals(invalidMemberResult)) {
             return invalidMemberResult;

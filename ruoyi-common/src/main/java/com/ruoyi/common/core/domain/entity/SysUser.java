@@ -14,7 +14,7 @@ import com.ruoyi.common.xss.Xss;
 
 /**
  * 用户对象 sys_user
- * 
+ *
  * @author ruoyi
  */
 public class SysUser extends BaseEntity
@@ -36,6 +36,28 @@ public class SysUser extends BaseEntity
     /** 用户昵称 */
     @Excel(name = "用户名称")
     private String nickName;
+
+    @Excel(name = "用户真实姓名")
+    private String trueName;
+
+    @Excel(name = "学号 学生特有字段")
+    private String sno;
+
+    @Excel(name = "专业 评审专家、学生特有字段")
+    private String major;
+
+    @Excel(name = "简介")
+    private String intro;
+
+    @Excel(name = "是否为学校职工 (0是 2否) 评审专家特有字段")
+    private String isSchool;
+
+    @Excel(name = "领域 评审专家特有字段")
+    private String domain;
+
+    @Excel(name = "职称 评审专家特有字段")
+    private String level;
+
 
     /** 用户邮箱 */
     @Excel(name = "用户邮箱")
@@ -297,6 +319,62 @@ public class SysUser extends BaseEntity
         this.roleId = roleId;
     }
 
+    public String getTrueName() {
+        return trueName;
+    }
+
+    public void setTrueName(String trueName) {
+        this.trueName = trueName;
+    }
+
+    public String getSno() {
+        return sno;
+    }
+
+    public void setSno(String sno) {
+        this.sno = sno;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public String getIsSchool() {
+        return isSchool;
+    }
+
+    public void setIsSchool(String isSchool) {
+        this.isSchool = isSchool;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -304,11 +382,17 @@ public class SysUser extends BaseEntity
             .append("deptId", getDeptId())
             .append("userName", getUserName())
             .append("nickName", getNickName())
+            .append("major", getMajor())
+            .append("sno", getSno())
             .append("email", getEmail())
             .append("phonenumber", getPhonenumber())
             .append("sex", getSex())
             .append("avatar", getAvatar())
             .append("password", getPassword())
+            .append("intro", getIntro())
+            .append("isSchool", getIsSchool())
+            .append("domain", getDomain())
+            .append("level", getLevel())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
             .append("loginIp", getLoginIp())
