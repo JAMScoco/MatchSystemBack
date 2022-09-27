@@ -24,6 +24,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectWorksTeacherVo">
         select id, name, number, gender, level, department_id, major, phone, del_flag, create_by, create_time, update_by, update_time, remark from works_teacher
     </sql>
+    <insert id="insertRelation">
+        insert into works_teacher_relation(work_id, teacher_id) values(#{teacherId},#{workId})
+    </insert>
 
     <select id="selectWorksTeacherList" parameterType="com.jamscoco.domain.WorksTeacher" resultMap="WorksTeacherResult">
         <include refid="selectWorksTeacherVo"/>
@@ -36,6 +39,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="major != null  and major != ''"> and major = #{major}</if>
             <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
         </where>
+    </select>
+    <select id="getJoinNumber" resultType="java.lang.Integer">
+        select count(*) from works_teacher_relation where teacher_id = #{id}
     </select>
 
 </mapper>

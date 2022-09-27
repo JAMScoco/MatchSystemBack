@@ -9,13 +9,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 参与成员对象 works_menber
+ * 参与成员对象 works_member
  *
  * @author jamscoco
- * @date 2022-09-25
+ * @date 2022-09-26
  */
-@TableName("works_menber")
-public class WorksMenber extends BaseEntity
+@TableName("works_member")
+public class WorksMember extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 

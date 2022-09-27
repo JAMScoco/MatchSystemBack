@@ -1,7 +1,12 @@
 package com.ruoyi.web.controller.system;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.jamscoco.vo.DeptInfo;
+import com.ruoyi.common.annotation.Anonymous;
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +29,7 @@ import com.ruoyi.system.service.ISysDeptService;
 
 /**
  * 部门信息
- * 
+ *
  * @author ruoyi
  */
 @RestController
@@ -128,5 +133,22 @@ public class SysDeptController extends BaseController
         }
         deptService.checkDeptDataScope(deptId);
         return toAjax(deptService.deleteDeptById(deptId));
+    }
+
+    /**
+     * 获取学校院系信息
+     * @return 常规院系信息
+     */
+    @Anonymous
+    @GetMapping("getSchoolDepts")
+    public AjaxResult getSchoolDepts(){
+        List<DeptInfo> result = new ArrayList<>();
+        List<SysDept> infos = deptService.getSchoolDepts();
+        for (SysDept info : infos) {
+            DeptInfo deptInfo = new DeptInfo();
+            BeanUtils.copyProperties(info,deptInfo);
+            result.add(deptInfo);
+        }
+        return AjaxResult.success(result);
     }
 }

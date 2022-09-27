@@ -19,4 +19,11 @@ public interface IWorksService extends IService<Works>
      * @return 作品集合
      */
     public List<Works> selectWorksList(Works works);
+
+    /**
+     * 添加作品
+     * @param works
+     * @return
+     */
+    String addWorks(Works works);
 }

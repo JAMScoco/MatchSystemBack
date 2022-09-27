@@ -3,6 +3,10 @@ package com.jamscoco.controller;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.jamscoco.domain.Match;
+import com.jamscoco.service.IMatchService;
+import com.ruoyi.common.constant.Constants;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +38,9 @@ public class WorksController extends BaseController
 {
     @Autowired
     private IWorksService worksService;
+
+    @Autowired
+    private IMatchService matchService;
 
     /**
      * 查询作品列表
@@ -73,12 +80,23 @@ public class WorksController extends BaseController
     /**
      * 新增作品
      */
-    @PreAuthorize("@ss.hasPermi('works:work:add')")
+    @PreAuthorize("@ss.hasRole('student')")
     @Log(title = "作品", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody Works works)
     {
-        return toAjax(worksService.save(works));
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch){
+            return AjaxResult.error("当前没有正在进行中的赛事，不能提交作品");
+        }
+        works.setMatchId(currentMatch.getId());
+        works.setUserId(String.valueOf(getUserId()));
+        String msg = worksService.addWorks(works);
+        if (!Constants.SUCCESS.equals(msg)){
+            return AjaxResult.error(msg);
+        }else {
+            return AjaxResult.success();
+        }
     }
 
     /**

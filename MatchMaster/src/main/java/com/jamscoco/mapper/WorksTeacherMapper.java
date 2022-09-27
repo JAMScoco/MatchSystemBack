@@ -4,6 +4,7 @@ import java.util.List;
 import com.jamscoco.domain.WorksTeacher;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 指导老师Mapper接口
@@ -22,4 +23,7 @@ public interface WorksTeacherMapper extends BaseMapper<WorksTeacher>
      */
     public List<WorksTeacher> selectWorksTeacherList(WorksTeacher worksTeacher);
 
+    int getJoinNumber(String id);
+
+    int insertRelation(@Param("teacherId") String teacherId, @Param("workId") String workId);
 }

@@ -118,4 +118,10 @@ public interface SysDeptMapper
      * @return 结果
      */
     public int deleteDeptById(Long deptId);
+
+    /**
+     * 获取常规学校院系信息
+     * @return 常规学校院系信息
+     */
+    List<SysDept> getSchoolDepts();
 }

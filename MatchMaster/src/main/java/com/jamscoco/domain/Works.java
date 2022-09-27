@@ -1,5 +1,6 @@
 package com.jamscoco.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -7,6 +8,8 @@ import com.ruoyi.common.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.ruoyi.common.core.domain.BaseEntity;
+
+import java.util.List;
 
 /**
  * 作品对象 works
@@ -75,6 +78,13 @@ public class Works extends BaseEntity
 
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
+
+
+    @TableField(exist = false)
+    private List<WorksMember> memberList;
+
+    @TableField(exist = false)
+    private List<WorksTeacher> teacherList;
 
     public void setId(String id)
     {
@@ -228,6 +238,22 @@ public class Works extends BaseEntity
     public String getDelFlag()
     {
         return delFlag;
+    }
+
+    public List<WorksMember> getMemberList() {
+        return memberList;
+    }
+
+    public void setMemberList(List<WorksMember> memberList) {
+        this.memberList = memberList;
+    }
+
+    public List<WorksTeacher> getTeacherList() {
+        return teacherList;
+    }
+
+    public void setTeacherList(List<WorksTeacher> teacherList) {
+        this.teacherList = teacherList;
     }
 
     @Override

@@ -1,22 +1,22 @@
 package com.jamscoco.service;
 
 import java.util.List;
-import com.jamscoco.domain.WorksMenber;
+import com.jamscoco.domain.WorksMember;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 参与成员Service接口
  *
  * @author jamscoco
- * @date 2022-09-25
+ * @date 2022-09-26
  */
-public interface IWorksMenberService extends IService<WorksMenber>
+public interface IWorksMemberService extends IService<WorksMember>
 {
     /**
      * 查询参与成员列表
      *
-     * @param worksMenber 参与成员
+     * @param worksMember 参与成员
      * @return 参与成员集合
      */
-    public List<WorksMenber> selectWorksMenberList(WorksMenber worksMenber);
+    public List<WorksMember> selectWorksMemberList(WorksMember worksMember);
 }

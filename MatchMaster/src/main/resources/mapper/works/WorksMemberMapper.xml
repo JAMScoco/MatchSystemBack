@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jamscoco.mapper.WorksMenberMapper">
+<mapper namespace="com.jamscoco.mapper.WorksMemberMapper">
 
-    <resultMap type="com.jamscoco.domain.WorksMenber" id="WorksMenberResult">
+    <resultMap type="com.jamscoco.domain.WorksMember" id="WorksMemberResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
         <result property="sno"    column="sno"    />
@@ -19,12 +19,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
     </resultMap>
 
-    <sql id="selectWorksMenberVo">
-        select id, name, sno, department_id, major, phone, del_flag, create_by, create_time, update_by, update_time, remark from works_menber
+    <sql id="selectWorksMemberVo">
+        select id, name, sno, department_id, major, phone, del_flag, create_by, create_time, update_by, update_time, remark from works_member
     </sql>
+    <insert id="insertRelation">
+        insert into works_member_relation(work_id, member_id)  values(#{workId},#{memberId})
+    </insert>
 
-    <select id="selectWorksMenberList" parameterType="com.jamscoco.domain.WorksMenber" resultMap="WorksMenberResult">
-        <include refid="selectWorksMenberVo"/>
+    <select id="selectWorksMemberList" parameterType="com.jamscoco.domain.WorksMember" resultMap="WorksMemberResult">
+        <include refid="selectWorksMemberVo"/>
         <where>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="sno != null  and sno != ''"> and sno = #{sno}</if>
@@ -32,6 +35,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="major != null  and major != ''"> and major = #{major}</if>
             <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
         </where>
+    </select>
+    <select id="getJoinNumber" resultType="java.lang.Integer">
+        select count(*) from works_member_relation where member_id = #{id}
     </select>
 
 </mapper>
