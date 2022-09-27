@@ -41,6 +41,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectMatchVo">
         select id, name, logo, organizing_committee, address, postcode, email, expert_committee, qr_code, start_submit_time, end_submit_time, start_review_time_department, end_review_time_department, start_review_time_school, end_review_time_school, competition_notice, review_rules, student_operation_manual, competition_guide, college_school_operation_manual, business_cooperation_invitation, competition_review_manual, review_number, del_flag, create_by, create_time, update_by, update_time, remark, start_time, end_time from match_info
     </sql>
+<!--    新增赛事文件-->
+    <update id="addMatchFile">
+        update match_info
+        <set>
+            <if test="fileType == 'competitionNotice'">competition_notice = #{file} </if>
+            <if test="fileType == 'reviewRules'">review_rules = #{file} </if>
+            <if test="fileType == 'studentOperationManual'">student_operation_manual = #{file} </if>
+            <if test="fileType == 'competitionGuide'">competition_guide = #{file} </if>
+            <if test="fileType == 'collegeSchoolOperationManual'">college_school_operation_manual = #{file} </if>
+            <if test="fileType == 'businessCooperationInvitation'">business_cooperation_invitation = #{file} </if>
+            <if test="fileType == 'competitionReviewManual'">competition_review_manual = #{file} </if>
+        </set>
+        where id = #{matchId}
+    </update>
+<!--    删除赛事文件-->
+    <delete id="delMatchFile">
+        update match_info
+        <set>
+            <if test="fileType == 'competitionNotice'">competition_notice = null </if>
+            <if test="fileType == 'reviewRules'">review_rules = null </if>
+            <if test="fileType == 'studentOperationManual'">student_operation_manual = null </if>
+            <if test="fileType == 'competitionGuide'">competition_guide = null </if>
+            <if test="fileType == 'collegeSchoolOperationManual'">college_school_operation_manual = null </if>
+            <if test="fileType == 'businessCooperationInvitation'">business_cooperation_invitation = null </if>
+            <if test="fileType == 'competitionReviewManual'">competition_review_manual = null </if>
+        </set>
+        where id = #{matchId}
+    </delete>
 
     <select id="selectHistoryMatchList" parameterType="com.jamscoco.domain.Match" resultMap="MatchResult">
         <include refid="selectMatchVo"/>

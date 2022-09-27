@@ -2,8 +2,10 @@ package com.jamscoco.mapper;
 
 import java.util.List;
 import com.jamscoco.domain.Match;
+import com.jamscoco.dto.MatchFileDto;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 赛事Mapper接口
@@ -22,4 +24,17 @@ public interface MatchMapper extends BaseMapper<Match>
      */
     public List<Match> selectHistoryMatchList(Match match);
 
+    /**
+     * 新增赛事文件
+     * @param matchFileDto
+     * @return
+     */
+    int addMatchFile(MatchFileDto matchFileDto);
+
+    /**
+     * 删除赛事文件
+     * @param matchFileDto
+     * @return
+     */
+    int delMatchFile(MatchFileDto matchFileDto);
 }

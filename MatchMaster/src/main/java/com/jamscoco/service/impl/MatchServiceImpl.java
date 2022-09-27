@@ -8,11 +8,12 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jamscoco.domain.*;
+import com.jamscoco.dto.MatchFileDto;
 import com.jamscoco.mapper.*;
+import com.jamscoco.vo.FileInfoVo;
 import com.jamscoco.vo.IndexInfoVo;
 import com.jamscoco.vo.MatchTimesVo;
 import com.jamscoco.vo.MatchTracksVo;
-import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jamscoco.service.IMatchService;
@@ -74,6 +75,65 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
         //设置赛道信息
         indexInfo.setMatchTracks(getMatchTracks(currentMatch.getId()));
         return indexInfo;
+    }
+
+    /**
+     * 查询大赛相关文件
+     * @param match
+     * @return
+     */
+    @Override
+    public List<FileInfoVo> getFiles(Match match) {
+        FileInfoVo fileInfoVo1 = new FileInfoVo();
+        fileInfoVo1.setName("大赛通知");
+        fileInfoVo1.setFileName(match.getCompetitionNotice());
+        FileInfoVo fileInfoVo2 = new FileInfoVo();
+        fileInfoVo2.setName("评审规则");
+        fileInfoVo2.setFileName(match.getReviewRules());
+        FileInfoVo fileInfoVo3 = new FileInfoVo();
+        fileInfoVo3.setName("学生操作手册");
+        fileInfoVo3.setFileName(match.getStudentOperationManual());
+        FileInfoVo fileInfoVo4 = new FileInfoVo();
+        fileInfoVo4.setName("大赛指南");
+        fileInfoVo4.setFileName(match.getCompetitionGuide());
+        FileInfoVo fileInfoVo5 = new FileInfoVo();
+        fileInfoVo5.setName("院级校级操作手册");
+        fileInfoVo5.setFileName(match.getCollegeSchoolOperationManual());
+        FileInfoVo fileInfoVo6 = new FileInfoVo();
+        fileInfoVo6.setName("商业合作邀请函");
+        fileInfoVo6.setFileName(match.getBusinessCooperationInvitation());
+        FileInfoVo fileInfoVo7 = new FileInfoVo();
+        fileInfoVo7.setName("大赛评审手册");
+        fileInfoVo7.setFileName(match.getCompetitionReviewManual());
+        ArrayList<FileInfoVo> voArrayList = new ArrayList<>();
+        voArrayList.add(fileInfoVo1);
+        voArrayList.add(fileInfoVo2);
+        voArrayList.add(fileInfoVo3);
+        voArrayList.add(fileInfoVo4);
+        voArrayList.add(fileInfoVo5);
+        voArrayList.add(fileInfoVo6);
+        voArrayList.add(fileInfoVo7);
+        return voArrayList;
+    }
+
+    /**
+     * 新增赛事文件
+     * @param matchFileDto
+     * @return
+     */
+    @Override
+    public boolean addMatchFile(MatchFileDto matchFileDto) {
+        return baseMapper.addMatchFile(matchFileDto) > 0;
+    }
+
+    /**
+     * 删除赛事文件
+     * @param matchFileDto
+     * @return
+     */
+    @Override
+    public boolean delMatchFile(MatchFileDto matchFileDto) {
+        return baseMapper.delMatchFile(matchFileDto) > 0;
     }
 
     private List<MatchTracksVo> getMatchTracks(String matchId) {
