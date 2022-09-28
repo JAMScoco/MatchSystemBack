@@ -21,7 +21,7 @@ public interface WorksMapper extends BaseMapper<Works>
      * @param works 作品
      * @return 作品集合
      */
-    public List<Works> selectWorksList(Works works);
+    public List<WorkInfo> selectWorksList(Works works);
 
     WorkInfo getWorkInfoById(String id);
 }

@@ -1,5 +1,6 @@
 package com.jamscoco.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import cn.hutool.core.date.DateUtil;
 import com.jamscoco.domain.Match;
 import com.jamscoco.service.IMatchService;
+import com.jamscoco.vo.WorkInfo;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,8 +52,17 @@ public class WorksController extends BaseController {
     @PreAuthorize("@ss.hasPermi('works:work:list')")
     @GetMapping("/list")
     public TableDataInfo list(Works works) {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return getDataTable(new ArrayList<>());
+        }
         startPage();
-        List<Works> list = worksService.selectWorksList(works);
+        //若是院系管理员，设置筛选条件为本院系
+        long roleType = getRoleType();
+        if (roleType == 1L) {
+            works.setDeptId(String.valueOf(getLoginUser().getDeptId()));
+        }
+        List<WorkInfo> list = worksService.selectWorksList(works);
         return getDataTable(list);
     }
 
@@ -62,8 +73,8 @@ public class WorksController extends BaseController {
     @Log(title = "作品", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, Works works) {
-        List<Works> list = worksService.selectWorksList(works);
-        ExcelUtil<Works> util = new ExcelUtil<Works>(Works.class);
+        List<WorkInfo> list = worksService.selectWorksList(works);
+        ExcelUtil<WorkInfo> util = new ExcelUtil<WorkInfo>(WorkInfo.class);
         util.exportExcel(response, list, "作品数据");
     }
 

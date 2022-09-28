@@ -43,7 +43,7 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
      * @return 作品
      */
     @Override
-    public List<Works> selectWorksList(Works works) {
+    public List<WorkInfo> selectWorksList(Works works) {
         return baseMapper.selectWorksList(works);
     }
 

@@ -26,7 +26,7 @@ import com.ruoyi.system.service.ISysUserService;
 
 /**
  * 个人信息 业务处理
- * 
+ *
  * @author ruoyi
  */
 @RestController
@@ -84,6 +84,13 @@ public class SysProfileController extends BaseController
             sysUser.setPhonenumber(user.getPhonenumber());
             sysUser.setEmail(user.getEmail());
             sysUser.setSex(user.getSex());
+            sysUser.setTrueName(user.getTrueName());
+            sysUser.setSno(user.getSno());
+            sysUser.setIntro(user.getIntro());
+            sysUser.setDomain(user.getDomain());
+            sysUser.setLevel(user.getLevel());
+            sysUser.setIsSchool(user.getIsSchool());
+            sysUser.setMajor(user.getMajor());
             tokenService.setLoginUser(loginUser);
             return AjaxResult.success();
         }
