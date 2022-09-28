@@ -27,4 +27,11 @@ public interface IMatchTrackService extends IService<MatchTrack>
      * @return
      */
     List<MatchTrack> getTrackInfo(String matchId);
+
+    /**
+     * 查询赛道组别信息
+     * @param matchId
+     * @return
+     */
+    List<MatchTrack> getTrackInfoWithoutCategory(String matchId);
 }

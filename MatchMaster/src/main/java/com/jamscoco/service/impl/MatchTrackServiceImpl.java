@@ -78,14 +78,42 @@ public class MatchTrackServiceImpl extends ServiceImpl<MatchTrackMapper, MatchTr
             categoryInfo.setTrackId(matchTrack.getId());
             categoryInfo.setName("类别");
             categoryInfo.setChildren(categoryChildrenList);
-
             List<TrackInfoVo> childrenList = new ArrayList<>();
             childrenList.add(groupInfo);
             childrenList.add(categoryInfo);
             matchTrack.setChildren(childrenList);
         }
-
         return trackList;
 
+    }
+
+    /**
+     * 查询赛道组别信息
+     * @param matchId
+     * @return
+     */
+    @Override
+    public List<MatchTrack> getTrackInfoWithoutCategory(String matchId) {
+        List<MatchTrack> trackList = baseMapper.selectList(new QueryWrapper<MatchTrack>().eq("match_id", matchId));
+        for (MatchTrack matchTrack : trackList) {
+            List<MatchGroup> groupList = matchGroupMapper.selectList(new QueryWrapper<MatchGroup>().eq("track_id", matchTrack.getId()));
+            List<TrackInfoVo> groupChildrenList = new ArrayList<>();
+            for (MatchGroup matchGroup : groupList) {
+                TrackInfoVo trackInfoVoGroup = new TrackInfoVo();
+                trackInfoVoGroup.setId(matchGroup.getId());
+                trackInfoVoGroup.setTrackId(matchTrack.getId());
+                trackInfoVoGroup.setName(matchGroup.getName());
+                trackInfoVoGroup.setRemark(matchGroup.getRemark());
+                groupChildrenList.add(trackInfoVoGroup);
+            }
+            TrackInfoVo groupInfo = new TrackInfoVo();
+            groupInfo.setTrackId(matchTrack.getId());
+            groupInfo.setName("组别");
+            groupInfo.setChildren(groupChildrenList);
+            List<TrackInfoVo> childrenList = new ArrayList<>();
+            childrenList.add(groupInfo);
+            matchTrack.setChildren(childrenList);
+        }
+        return trackList;
     }
 }
