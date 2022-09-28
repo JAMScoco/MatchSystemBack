@@ -1,43 +1,63 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jamscoco.mapper.WorksMemberMapper">
 
     <resultMap type="com.jamscoco.domain.WorksMember" id="WorksMemberResult">
-        <result property="id"    column="id"    />
-        <result property="name"    column="name"    />
-        <result property="sno"    column="sno"    />
-        <result property="departmentId"    column="department_id"    />
-        <result property="major"    column="major"    />
-        <result property="phone"    column="phone"    />
-        <result property="delFlag"    column="del_flag"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sno" column="sno"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="major" column="major"/>
+        <result property="phone" column="phone"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
     </resultMap>
 
     <sql id="selectWorksMemberVo">
-        select id, name, sno, department_id, major, phone, del_flag, create_by, create_time, update_by, update_time, remark from works_member
+        select id,
+               name,
+               sno,
+               department_id,
+               major,
+               phone,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from works_member
     </sql>
     <insert id="insertRelation">
-        insert into works_member_relation(work_id, member_id)  values(#{workId},#{memberId})
+        insert into works_member_relation(work_id, member_id)
+        values (#{workId}, #{memberId})
     </insert>
 
     <select id="selectWorksMemberList" parameterType="com.jamscoco.domain.WorksMember" resultMap="WorksMemberResult">
         <include refid="selectWorksMemberVo"/>
         <where>
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="sno != null  and sno != ''"> and sno = #{sno}</if>
-            <if test="departmentId != null  and departmentId != ''"> and department_id = #{departmentId}</if>
-            <if test="major != null  and major != ''"> and major = #{major}</if>
-            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="sno != null  and sno != ''">and sno = #{sno}</if>
+            <if test="departmentId != null  and departmentId != ''">and department_id = #{departmentId}</if>
+            <if test="major != null  and major != ''">and major = #{major}</if>
+            <if test="phone != null  and phone != ''">and phone = #{phone}</if>
         </where>
     </select>
     <select id="getJoinNumber" resultType="java.lang.Integer">
-        select count(*) from works_member_relation where member_id = #{id}
+        select count(*)
+        from works_member_relation
+        where member_id = #{id}
+    </select>
+
+    <select id="getMembersByWorkId" resultType="com.jamscoco.domain.WorksMember">
+        <include refid="selectWorksMemberVo"/>
+        where id in (select member_id from works_member_relation where work_id = #{id})
     </select>
 
 </mapper>

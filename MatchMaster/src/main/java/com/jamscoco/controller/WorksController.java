@@ -6,12 +6,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.date.DateUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jamscoco.domain.Match;
 import com.jamscoco.service.IMatchService;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.entity.SysUser;
-import lombok.Data;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,7 +73,7 @@ public class WorksController extends BaseController {
     @PreAuthorize("@ss.hasPermi('works:work:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") String id) {
-        return AjaxResult.success(worksService.getById(id));
+        return AjaxResult.success(worksService.getWorkInfoById(id));
     }
 
     /**
@@ -104,12 +102,9 @@ public class WorksController extends BaseController {
             return AjaxResult.success("报名时间已截止，不能提交作品");
         }
         //4.该学生是否在本次赛事中提交过作品
-        QueryWrapper<Works> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", getUserId());
-        queryWrapper.eq("match_id", currentMatch.getId());
-        Works query = worksService.getOne(queryWrapper);
-        if (query != null){
-            return AjaxResult.error("您在本次大赛中已经提交过项目");
+        Works query = worksService.currentMatchWork(getUserId(), currentMatch.getId());
+        if (query != null) {
+            return AjaxResult.success("您在本次大赛中已经提交过作品，请直接查看");
         }
         works.setMatchId(currentMatch.getId());
         works.setUserId(String.valueOf(getUserId()));
@@ -143,14 +138,27 @@ public class WorksController extends BaseController {
             return AjaxResult.success("报名时间已截止，不能提交作品");
         }
         //4.该学生是否在本次赛事中提交过作品
-        QueryWrapper<Works> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", getUserId());
-        queryWrapper.eq("match_id", currentMatch.getId());
-        Works query = worksService.getOne(queryWrapper);
-        if (query != null){
+        Works works = worksService.currentMatchWork(getUserId(), currentMatch.getId());
+        if (works != null) {
             return AjaxResult.success("您在本次大赛中已经提交过作品，请直接查看");
         }
         return AjaxResult.success("valid");
+    }
+
+    @PreAuthorize("@ss.hasRole('student')")
+    @GetMapping("currentWorkInfo")
+    public AjaxResult currentWorkInfo() {
+        //1.当前是否有进行中的赛事
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.success("当前没有正在进行中的赛事");
+        }
+        //2.该学生是否在本次赛事中提交过作品
+        Works works = worksService.currentMatchWork(getUserId(), currentMatch.getId());
+        if (works == null) {
+            return AjaxResult.success("您在本次大赛中还未提交过作品，请先提交作品");
+        }
+        return AjaxResult.success("ok", worksService.getWorkInfoById(works.getId()));
     }
 
 

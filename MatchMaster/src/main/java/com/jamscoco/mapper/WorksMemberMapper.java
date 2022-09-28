@@ -26,4 +26,6 @@ public interface WorksMemberMapper extends BaseMapper<WorksMember>
     int getJoinNumber(String id);
 
     int insertRelation(@Param("memberId") String memberId, @Param("workId") String workId);
+
+    List<WorksMember> getMembersByWorkId(String id);
 }

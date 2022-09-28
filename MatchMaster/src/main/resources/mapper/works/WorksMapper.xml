@@ -1,47 +1,102 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jamscoco.mapper.WorksMapper">
 
     <resultMap type="com.jamscoco.domain.Works" id="WorksResult">
-        <result property="id"    column="id"    />
-        <result property="name"    column="name"    />
-        <result property="userId"    column="user_id"    />
-        <result property="report"    column="report"    />
-        <result property="attachment"    column="attachment"    />
-        <result property="matchId"    column="match_id"    />
-        <result property="trackId"    column="track_id"    />
-        <result property="groupId"    column="group_id"    />
-        <result property="categoryId"    column="category_id"    />
-        <result property="departmentAverageScore"    column="department_average_score"    />
-        <result property="schoolAverageScore"    column="school_average_score"    />
-        <result property="state"    column="state"    />
-        <result property="screenshot"    column="screenshot"    />
-        <result property="overview"    column="overview"    />
-        <result property="departmentSort"    column="department_sort"    />
-        <result property="schoolSort"    column="school_sort"    />
-        <result property="delFlag"    column="del_flag"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="userId" column="user_id"/>
+        <result property="report" column="report"/>
+        <result property="attachment" column="attachment"/>
+        <result property="matchId" column="match_id"/>
+        <result property="trackId" column="track_id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="departmentAverageScore" column="department_average_score"/>
+        <result property="schoolAverageScore" column="school_average_score"/>
+        <result property="state" column="state"/>
+        <result property="screenshot" column="screenshot"/>
+        <result property="overview" column="overview"/>
+        <result property="departmentSort" column="department_sort"/>
+        <result property="schoolSort" column="school_sort"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
     </resultMap>
 
     <sql id="selectWorksVo">
-        select id, name, user_id, report, attachment, match_id, track_id, group_id, category_id, department_average_score, school_average_score, state, screenshot, overview, department_sort, school_sort, del_flag, create_by, create_time, update_by, update_time, remark from works
+        select id,
+               name,
+               user_id,
+               report,
+               attachment,
+               match_id,
+               track_id,
+               group_id,
+               category_id,
+               department_average_score,
+               school_average_score,
+               state,
+               screenshot,
+               overview,
+               department_sort,
+               school_sort,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from works
     </sql>
 
     <select id="selectWorksList" parameterType="com.jamscoco.domain.Works" resultMap="WorksResult">
         <include refid="selectWorksVo"/>
         <where>
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="trackId != null  and trackId != ''"> and track_id = #{trackId}</if>
-            <if test="groupId != null  and groupId != ''"> and group_id = #{groupId}</if>
-            <if test="categoryId != null  and categoryId != ''"> and category_id = #{categoryId}</if>
-            <if test="state != null "> and state = #{state}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="trackId != null  and trackId != ''">and track_id = #{trackId}</if>
+            <if test="groupId != null  and groupId != ''">and group_id = #{groupId}</if>
+            <if test="categoryId != null  and categoryId != ''">and category_id = #{categoryId}</if>
+            <if test="state != null ">and state = #{state}</if>
         </where>
+    </select>
+    <select id="getWorkInfoById" resultType="com.jamscoco.vo.WorkInfo">
+        select w.id,
+               w.name,
+               w.report,
+               w.attachment,
+               w.track_id,
+               w.group_id,
+               w.category_id,
+               w.department_average_score,
+               w.school_average_score,
+               w.state,
+               w.screenshot,
+               w.overview,
+               w.department_sort,
+               w.school_sort,
+               w.create_time,
+               u.true_name,
+               u.sno,
+               u.phonenumber,
+               t.name as track_name,
+               g.name as group_name,
+               c.name as category_name
+        from works as w,
+             match_track as t,
+             match_group as g,
+             match_category as c,
+             sys_user as u
+        where w.id = #{id}
+          and w.track_id = t.id
+          and w.group_id = g.id
+          and w.category_id = c.id
+          and w.user_id = u.user_id
     </select>
 
 </mapper>

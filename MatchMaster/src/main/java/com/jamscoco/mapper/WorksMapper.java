@@ -2,6 +2,7 @@ package com.jamscoco.mapper;
 
 import java.util.List;
 import com.jamscoco.domain.Works;
+import com.jamscoco.vo.WorkInfo;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -22,4 +23,5 @@ public interface WorksMapper extends BaseMapper<Works>
      */
     public List<Works> selectWorksList(Works works);
 
+    WorkInfo getWorkInfoById(String id);
 }

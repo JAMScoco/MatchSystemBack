@@ -3,6 +3,7 @@ package com.jamscoco.service;
 import java.util.List;
 import com.jamscoco.domain.Works;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jamscoco.vo.WorkInfo;
 
 /**
  * 作品Service接口
@@ -22,8 +23,17 @@ public interface IWorksService extends IService<Works>
 
     /**
      * 添加作品
-     * @param works
-     * @return
+     * @param works 作品
+     * @return 结果
      */
     String addWorks(Works works);
+
+    WorkInfo getWorkInfoById(String id);
+
+    /**
+     * @param userId 当前用户id
+     * @param matchId 当前赛事id
+     * @return 当前用户在当前赛事作品
+     */
+    Works currentMatchWork(Long userId, String matchId);
 }

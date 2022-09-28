@@ -9,6 +9,7 @@ import com.jamscoco.domain.WorksMember;
 import com.jamscoco.domain.WorksTeacher;
 import com.jamscoco.mapper.WorksMemberMapper;
 import com.jamscoco.mapper.WorksTeacherMapper;
+import com.jamscoco.vo.WorkInfo;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.DateUtils;
@@ -57,8 +58,25 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
         if (!Constants.SUCCESS.equals(invalidTeacherResult)) {
             return invalidTeacherResult;
         }
+        works.setState(0L);
         baseMapper.insert(works);
         return insertRelation(works);
+    }
+
+    @Override
+    public WorkInfo getWorkInfoById(String id) {
+        WorkInfo info = baseMapper.getWorkInfoById(id);
+        info.setMemberList(memberMapper.getMembersByWorkId(id));
+        info.setTeacherList(teacherMapper.getTeachersByWorkId(id));
+        return info;
+    }
+
+    @Override
+    public Works currentMatchWork(Long userId, String matchId) {
+        QueryWrapper<Works> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId);
+        queryWrapper.eq("match_id", matchId);
+        return baseMapper.selectOne(queryWrapper);
     }
 
     private String insertRelation(Works works) {
