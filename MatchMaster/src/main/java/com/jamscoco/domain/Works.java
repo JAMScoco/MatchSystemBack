@@ -33,6 +33,9 @@ public class Works extends BaseEntity
     /** 负责人ID */
     private String userId;
 
+    @TableField(exist = false)
+    private String deptId;
+
     /** 作品报告（文件链接 */
     private String report;
 
@@ -254,6 +257,14 @@ public class Works extends BaseEntity
 
     public void setTeacherList(List<WorksTeacher> teacherList) {
         this.teacherList = teacherList;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
     }
 
     @Override
