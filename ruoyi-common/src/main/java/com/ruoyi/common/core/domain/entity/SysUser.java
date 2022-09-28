@@ -49,7 +49,7 @@ public class SysUser extends BaseEntity
     @Excel(name = "简介")
     private String intro;
 
-    @Excel(name = "是否为学校职工 (0是 2否) 评审专家特有字段")
+    @Excel(name = "是否为学校职工 (0是 1否) 评审专家特有字段")
     private String isSchool;
 
     @Excel(name = "领域 评审专家特有字段")
