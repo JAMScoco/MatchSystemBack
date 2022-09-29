@@ -42,7 +42,6 @@ public class MatchReviewTemplateController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(MatchReviewTemplate matchReviewTemplate)
     {
-        startPage();
         List<MatchReviewTemplate> list = matchReviewTemplateService.selectMatchReviewTemplateList(matchReviewTemplate);
         return getDataTable(list);
     }

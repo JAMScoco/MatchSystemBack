@@ -25,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectMatchReviewTemplateList" parameterType="com.jamscoco.domain.MatchReviewTemplate" resultMap="MatchReviewTemplateResult">
         <include refid="selectMatchReviewTemplateVo"/>
         <where>
+            <if test="groupId != null  and groupId != ''"> and group_id = #{groupId}</if>
         </where>
     </select>
 

@@ -63,6 +63,22 @@ public class MatchTrackController extends BaseController
     }
 
     /**
+     * 查询赛道组别信息
+     * @return
+     */
+    @Anonymous
+    @GetMapping("/getTrackInfoWithoutCategory")
+    public AjaxResult getTrackInfoWithoutCategory(){
+        Match currentMatch = matchService.getCurrentMatch();
+        if(null == currentMatch){
+            return AjaxResult.error("没有正在进行的赛事");
+        }else {
+            List<MatchTrack> trackList = matchTrackService.getTrackInfoWithoutCategory(currentMatch.getId());
+            return AjaxResult.success(trackList);
+        }
+    }
+
+    /**
      * 查询赛事对应的赛道信息列表
      */
     @PreAuthorize("@ss.hasPermi('match:history:edit')")
