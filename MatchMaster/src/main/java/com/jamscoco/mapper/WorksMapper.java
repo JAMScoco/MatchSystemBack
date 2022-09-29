@@ -24,4 +24,6 @@ public interface WorksMapper extends BaseMapper<Works>
     public List<WorkInfo> selectWorksList(Works works);
 
     WorkInfo getWorkInfoById(String id);
+
+    int check(Works works);
 }

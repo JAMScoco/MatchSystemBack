@@ -34,6 +34,9 @@
              sys_user as u,
              sys_dept as d
     </sql>
+    <update id="check">
+        update works set state = #{state} where id = #{id}
+    </update>
 
     <select id="selectWorksList" parameterType="com.jamscoco.domain.Works" resultType="com.jamscoco.vo.WorkInfo">
         <include refid="selectWorksVo"/>

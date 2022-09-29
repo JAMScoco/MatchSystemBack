@@ -184,6 +184,16 @@ public class WorksController extends BaseController {
     }
 
     /**
+     * 审核作品
+     */
+    @PreAuthorize("@ss.hasPermi('works:work:edit')")
+    @Log(title = "作品", businessType = BusinessType.UPDATE)
+    @PutMapping("/check")
+    public AjaxResult check(@RequestBody Works works) {
+        return toAjax(worksService.check(works));
+    }
+
+    /**
      * 删除作品
      */
     @PreAuthorize("@ss.hasPermi('works:work:remove')")

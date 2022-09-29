@@ -36,4 +36,6 @@ public interface IWorksService extends IService<Works>
      * @return 当前用户在当前赛事作品
      */
     Works currentMatchWork(Long userId, String matchId);
+
+    int check(Works works);
 }

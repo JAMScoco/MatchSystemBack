@@ -79,6 +79,11 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
         return baseMapper.selectOne(queryWrapper);
     }
 
+    @Override
+    public int check(Works works) {
+        return baseMapper.check(works);
+    }
+
     private String insertRelation(Works works) {
         for (WorksMember member : works.getMemberList()) {
             if (member.getId() == null) {
