@@ -73,6 +73,11 @@ public class WorksController extends BaseController {
     @Log(title = "作品", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, Works works) {
+        //若是院系管理员，设置筛选条件为本院系
+        long roleType = getRoleType();
+        if (roleType == 1L) {
+            works.setDeptId(String.valueOf(getLoginUser().getDeptId()));
+        }
         List<WorkInfo> list = worksService.selectWorksList(works);
         ExcelUtil<WorkInfo> util = new ExcelUtil<WorkInfo>(WorkInfo.class);
         util.exportExcel(response, list, "作品数据");
