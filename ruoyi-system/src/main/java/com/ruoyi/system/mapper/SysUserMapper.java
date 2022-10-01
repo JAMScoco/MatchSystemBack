@@ -129,4 +129,6 @@ public interface SysUserMapper
     public SysUser checkEmailUnique(String email);
 
     int updateReviewer(SysUser user);
+
+    List<SysUser> selectReviewerList(SysUser user);
 }

@@ -540,10 +540,7 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Override
     public List<SysUser> selectReviewerList(SysUser user) {
-        List<SysUser> userList = userMapper.selectUserList(user);
-        //列表中移除非评审专家的数据
-        userList.removeIf(item-> !isReviewer(item.getUserId()));
-        return userList;
+        return userMapper.selectReviewerList(user);
     }
 
     @Override
@@ -561,12 +558,4 @@ public class SysUserServiceImpl implements ISysUserService
         return userMapper.updateReviewer(user);
     }
 
-    /**
-     * 判断用户是否为评审专家
-     * @param userId  用户id
-     * @return 是否为评审专家
-     */
-    private boolean isReviewer(Long userId) {
-        return userRoleMapper.isReviewer(userId);
-    }
 }

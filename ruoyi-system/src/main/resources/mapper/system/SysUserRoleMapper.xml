@@ -16,9 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="countUserRoleByRoleId" resultType="Integer">
 	    select count(1) from sys_user_role where role_id=#{roleId}
 	</select>
-    <select id="isReviewer" resultType="java.lang.Boolean">
-		select count(*) from sys_user_role where user_id = #{userId} and role_id = 101
-	</select>
+
 
     <delete id="deleteUserRole" parameterType="Long">
  		delete from sys_user_role where user_id in
