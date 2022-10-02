@@ -1,6 +1,12 @@
 package com.ruoyi.web.controller.reviewer;
 
 
+import cn.hutool.core.date.DateUtil;
+import com.jamscoco.domain.Match;
+import com.jamscoco.domain.Works;
+import com.jamscoco.service.IMatchService;
+import com.jamscoco.service.IWorksService;
+import com.jamscoco.vo.WorkInfo;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
@@ -14,10 +20,10 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +47,12 @@ public class ReviewerController extends BaseController {
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private IMatchService matchService;
+
+    @Autowired
+    private IWorksService worksService;
 
     /**
      * 获取评审专家列表
@@ -122,4 +134,52 @@ public class ReviewerController extends BaseController {
         user.setUpdateBy(getUsername());
         return toAjax(userService.updateReviewer(user));
     }
+
+    /**
+     * 生成分配评审任务数据
+     */
+    @PreAuthorize("@ss.hasPermi('works:work:edit')")
+    @PostMapping("/genAssignData")
+    public AjaxResult getAssignData(@RequestBody List<SysUser> reviewers) {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.error("当前没有进行中的赛事");
+        }
+        //获取当前赛事本院系待评审作品id
+        List<String> waitReviewWorkIds = worksService.waitReviewWorksDepartment(getDeptId(), currentMatch.getId());
+        return AjaxResult.success(userService.genAssignData(reviewers, currentMatch.getReviewNumber(), waitReviewWorkIds));
+    }
+
+    /**
+     * 检查当前是否可以分配评审任务
+     */
+    @PreAuthorize("@ss.hasPermi('works:work:edit')")
+    @GetMapping("/checkCanAssign")
+    public AjaxResult checkCanAssign() {
+        //1.当前是否有进行中的赛事
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.success("当前没有进行中的赛事");
+        }
+        //2.报名时间是否结束
+        Date now = new Date();
+        if (DateUtil.compare(now, currentMatch.getEndSubmitTime()) < 0) {
+            return AjaxResult.success("报名时间号未结束");
+        }
+        //3. 是否还有作品国家报名截图未审核
+        Works works = new Works();
+        works.setState(0L);
+        long roleType = getRoleType();
+        if (roleType == 1L) {
+            works.setDeptId(String.valueOf(getLoginUser().getDeptId()));
+        }
+        List<WorkInfo> list = worksService.selectWorksList(works);
+        if (list.size() > 0) {
+            return AjaxResult.success("还有作品国家报名截图未审核");
+        }
+        //TODO 4. 是否已经生成评审任务
+
+        return AjaxResult.success("ok");
+    }
+
 }

@@ -35,7 +35,9 @@
              sys_dept as d
     </sql>
     <update id="check">
-        update works set state = #{state} where id = #{id}
+        update works
+        set state = #{state}
+        where id = #{id}
     </update>
 
     <select id="selectWorksList" parameterType="com.jamscoco.domain.Works" resultType="com.jamscoco.vo.WorkInfo">
@@ -65,6 +67,14 @@
             and w.user_id = u.user_id
             and u.dept_id = d.dept_id
         </where>
+    </select>
+    <select id="waitReviewWorksDepartment" resultType="java.lang.String">
+        select w.id
+        from works w
+                 left join sys_user u on w.user_id = u.user_id
+        where u.dept_id = #{deptId}
+          and w.match_id = #{matchId}
+          and w.state = 1
     </select>
 
 </mapper>

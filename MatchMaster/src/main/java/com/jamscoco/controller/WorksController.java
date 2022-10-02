@@ -60,7 +60,7 @@ public class WorksController extends BaseController {
         //若是院系管理员，设置筛选条件为本院系
         long roleType = getRoleType();
         if (roleType == 1L) {
-            works.setDeptId(String.valueOf(getLoginUser().getDeptId()));
+            works.setDeptId(String.valueOf(getDeptId()));
         }
         List<WorkInfo> list = worksService.selectWorksList(works);
         return getDataTable(list);
@@ -76,7 +76,7 @@ public class WorksController extends BaseController {
         //若是院系管理员，设置筛选条件为本院系
         long roleType = getRoleType();
         if (roleType == 1L) {
-            works.setDeptId(String.valueOf(getLoginUser().getDeptId()));
+            works.setDeptId(String.valueOf(getDeptId()));
         }
         List<WorkInfo> list = worksService.selectWorksList(works);
         ExcelUtil<WorkInfo> util = new ExcelUtil<WorkInfo>(WorkInfo.class);
@@ -206,5 +206,15 @@ public class WorksController extends BaseController {
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable String[] ids) {
         return toAjax(worksService.removeByIds(Arrays.asList(ids)));
+    }
+
+    @PreAuthorize("@ss.hasPermi('works:work:remove')")
+    @GetMapping("/waitReviewWorksDepartment")
+    public AjaxResult waitReviewWorksDepartment() {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.success("当前没有正在进行中的赛事");
+        }
+        return AjaxResult.success(worksService.waitReviewWorksDepartment(getDeptId(),currentMatch.getId()));
     }
 }

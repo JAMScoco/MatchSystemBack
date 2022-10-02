@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.common.core.domain.entity.SysUser;
 
 /**
@@ -209,4 +211,6 @@ public interface ISysUserService
     int insertReviewer(SysUser user);
 
     int updateReviewer(SysUser user);
+
+    Map<String,Object> genAssignData(List<SysUser> reviewers, Long reviewNumber, List<String> waitReviewWorkIds);
 }

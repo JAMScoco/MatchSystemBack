@@ -5,6 +5,7 @@ import com.jamscoco.domain.Works;
 import com.jamscoco.vo.WorkInfo;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 作品Mapper接口
@@ -26,4 +27,6 @@ public interface WorksMapper extends BaseMapper<Works>
     WorkInfo getWorkInfoById(String id);
 
     int check(Works works);
+
+    List<String> waitReviewWorksDepartment(@Param("deptId")Long deptId, @Param("matchId") String matchId);
 }

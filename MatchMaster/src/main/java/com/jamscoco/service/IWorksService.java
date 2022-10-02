@@ -38,4 +38,12 @@ public interface IWorksService extends IService<Works>
     Works currentMatchWork(Long userId, String matchId);
 
     int check(Works works);
+
+    /**
+     * 获取当前赛事本院系待评审作品id
+     * @param deptId 院系id
+     * @param matchId 当前赛事id
+     * @return 当前赛事本院系待评审作品id
+     */
+    List<String> waitReviewWorksDepartment(Long deptId, String matchId);
 }
