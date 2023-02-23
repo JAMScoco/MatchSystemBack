@@ -2,6 +2,7 @@ package com.jamscoco.mapper;
 
 import java.util.List;
 import com.jamscoco.domain.WorksScore;
+import com.jamscoco.vo.ScoreVo;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,4 +25,6 @@ public interface WorksScoreMapper extends BaseMapper<WorksScore>
     public List<WorksScore> selectWorksScoreList(WorksScore worksScore);
 
     Integer check(@Param("id")String id,@Param("type") int i);
+
+    List<ScoreVo> getReviewDetails(@Param("matchId") String matchId,@Param("type") Long type);
 }

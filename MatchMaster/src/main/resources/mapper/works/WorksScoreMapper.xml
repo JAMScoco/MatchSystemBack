@@ -37,5 +37,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where ws.work_id = #{id}
           and ws.type = #{type}
     </select>
+    <select id="getReviewDetails" resultType="com.jamscoco.vo.ScoreVo">
+        select ws.id, ws.work_id, ws.user_id, w.name, su.true_name, ws.score_detail
+        from works_score as ws
+                 left join works w on w.id = ws.work_id
+                 left join sys_user su on ws.user_id = su.user_id
+        where w.match_id = #{matchId}
+          and ws.type = #{type}
+        order by ws.work_id
+    </select>
 
 </mapper>

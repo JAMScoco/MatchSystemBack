@@ -1,11 +1,11 @@
 package com.jamscoco.service.impl;
 
-import java.util.List;
+import java.util.*;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jamscoco.mapper.WorksMapper;
+import com.jamscoco.vo.ScoreVo;
 import com.jamscoco.vo.WorkInfo;
-import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jamscoco.mapper.WorksScoreMapper;
@@ -48,5 +48,40 @@ public class WorksScoreServiceImpl extends ServiceImpl<WorksScoreMapper, WorksSc
         }
         return false;
 
+    }
+
+    @Override
+    public Map<String,Object> getReviewDetails(String matchId, Long type) {
+        List<ScoreVo> query = baseMapper.getReviewDetails(matchId,type);
+        if (query.size() == 0 ){
+            return null;
+        }
+        List<Map<String,Object>> target = new ArrayList<>();
+        List<String> heads = new ArrayList<>();
+        Map<String,Object> cur = new HashMap<>();
+        int curNum = 0;
+        String curWorkName = query.get(0).getName();
+        for (ScoreVo score : query) {
+            if (score.getName().equals(curWorkName)){
+                cur.put("work",curWorkName);
+                cur.put("score"+ (curNum++),score);
+            }else {
+                target.add(cur);
+                cur = new HashMap<>();
+                curWorkName = score.getName();
+
+                cur.put("work",curWorkName);
+                curNum = 0;
+                cur.put("score"+ (curNum++),score);
+            }
+        }
+        for (int i = 0; i < curNum; i++) {
+            heads.add("score"+ i);
+        }
+        target.add(cur);
+        Map<String,Object> result = new HashMap<>();
+        result.put("heads",heads);
+        result.put("target",target);
+        return result;
     }
 }

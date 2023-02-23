@@ -1,8 +1,11 @@
 package com.jamscoco.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.jamscoco.domain.WorksScore;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jamscoco.vo.ScoreVo;
 
 /**
  * 评审分值Service接口
@@ -21,4 +24,6 @@ public interface IWorksScoreService extends IService<WorksScore>
     public List<WorksScore> selectWorksScoreList(WorksScore worksScore);
 
     boolean checkGenAssign(List<String> waitReviewWorkIds);
+
+    Map<String,Object> getReviewDetails(String matchId, Long type);
 }

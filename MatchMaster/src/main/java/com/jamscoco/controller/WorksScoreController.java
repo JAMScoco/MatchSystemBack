@@ -2,7 +2,12 @@ package com.jamscoco.controller;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+
+import com.jamscoco.domain.Match;
+import com.jamscoco.service.IMatchService;
+import com.jamscoco.vo.ScoreVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +40,10 @@ public class WorksScoreController extends BaseController
     @Autowired
     private IWorksScoreService worksScoreService;
 
+    @Autowired
+    private IMatchService matchService;
+
+
     /**
      * 查询评审分值列表
      */
@@ -45,6 +54,22 @@ public class WorksScoreController extends BaseController
         startPage();
         List<WorksScore> list = worksScoreService.selectWorksScoreList(worksScore);
         return getDataTable(list);
+    }
+
+    /**
+     * 查询评审分值列表
+     */
+    @PreAuthorize("@ss.hasPermi('works:work:edit')")
+    @GetMapping("/details")
+    public AjaxResult details()
+    {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.error("当前没有正在进行的赛事，请新增赛事！");
+        }
+        Map<String,Object> reviewDetails = worksScoreService.getReviewDetails(currentMatch.getId(), getRoleType());
+        return AjaxResult.success(reviewDetails);
+
     }
 
     /**
