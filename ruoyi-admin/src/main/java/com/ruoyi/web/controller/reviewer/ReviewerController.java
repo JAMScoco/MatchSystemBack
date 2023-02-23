@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import com.jamscoco.domain.Match;
 import com.jamscoco.domain.Works;
 import com.jamscoco.service.IMatchService;
+import com.jamscoco.service.IWorksScoreService;
 import com.jamscoco.service.IWorksService;
 import com.jamscoco.vo.WorkInfo;
 import com.ruoyi.common.annotation.Log;
@@ -53,6 +54,9 @@ public class ReviewerController extends BaseController {
 
     @Autowired
     private IWorksService worksService;
+
+    @Autowired
+    private IWorksScoreService worksScoreService;
 
     /**
      * 获取评审专家列表
@@ -136,7 +140,7 @@ public class ReviewerController extends BaseController {
     }
 
     /**
-     * 生成分配评审任务数据
+     * 生成预览分配评审任务数据
      */
     @PreAuthorize("@ss.hasPermi('works:work:edit')")
     @PostMapping("/genAssignData")
@@ -145,9 +149,42 @@ public class ReviewerController extends BaseController {
         if (null == currentMatch) {
             return AjaxResult.error("当前没有进行中的赛事");
         }
-        //获取当前赛事本院系待评审作品id
-        List<String> waitReviewWorkIds = worksService.waitReviewWorksDepartment(getDeptId(), currentMatch.getId());
+        List<String> waitReviewWorkIds = null;
+        long roleType = getRoleType();
+        if(roleType == 1L){
+            //获取当前赛事本院系待评审作品id
+            waitReviewWorkIds = worksService.waitReviewWorksDepartment(getDeptId(), currentMatch.getId());
+        }
+        if(roleType == 0L){
+            waitReviewWorkIds = worksService.waitReviewWorksSchool(currentMatch.getId());
+        }
         return AjaxResult.success(userService.genAssignData(reviewers, currentMatch.getReviewNumber(), waitReviewWorkIds));
+    }
+
+    /**
+     * 删除预览分配评审任务数据
+     */
+    @PreAuthorize("@ss.hasPermi('works:work:edit')")
+    @PostMapping("/delPreAssign/{key}")
+    public AjaxResult delPreAssign(@PathVariable String key) {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.error("当前没有进行中的赛事");
+        }
+        return AjaxResult.success(worksService.delPreAssign(key));
+    }
+
+    /**
+     * 确认生成分配评审任务数据
+     */
+    @PreAuthorize("@ss.hasPermi('works:work:edit')")
+    @PostMapping("/ensurePreAssign/{key}")
+    public AjaxResult ensurePreAssign(@PathVariable String key) {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.error("当前没有进行中的赛事");
+        }
+        return AjaxResult.success(worksService.ensurePreAssign(key));
     }
 
     /**
@@ -169,16 +206,25 @@ public class ReviewerController extends BaseController {
         //3. 是否还有作品国家报名截图未审核
         Works works = new Works();
         works.setState(0L);
-        long roleType = getRoleType();
-        if (roleType == 1L) {
-            works.setDeptId(String.valueOf(getLoginUser().getDeptId()));
-        }
         List<WorkInfo> list = worksService.selectWorksList(works);
         if (list.size() > 0) {
             return AjaxResult.success("还有作品国家报名截图未审核");
         }
-        //TODO 4. 是否已经生成评审任务
-
+        //4. 是否已经生成评审任务
+        List<String> waitReviewWorkIds = null;
+        boolean hasGenAssign = false;
+        long roleType = getRoleType();
+        if(roleType == 1L){
+            //获取当前赛事本院系待评审作品id
+            waitReviewWorkIds = worksService.waitReviewWorksDepartment(getDeptId(), currentMatch.getId());
+        }
+        if(roleType == 0L){
+            waitReviewWorkIds = worksService.waitReviewWorksSchool(currentMatch.getId());
+        }
+        hasGenAssign = worksScoreService.checkGenAssign(waitReviewWorkIds);
+        if (hasGenAssign){
+            return AjaxResult.success("评审任务已经生成，请查看");
+        }
         return AjaxResult.success("ok");
     }
 

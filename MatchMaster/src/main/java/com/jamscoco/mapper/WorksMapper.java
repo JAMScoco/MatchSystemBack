@@ -29,4 +29,6 @@ public interface WorksMapper extends BaseMapper<Works>
     int check(Works works);
 
     List<String> waitReviewWorksDepartment(@Param("deptId")Long deptId, @Param("matchId") String matchId);
+
+    List<String> waitReviewWorksSchool(String matchId);
 }

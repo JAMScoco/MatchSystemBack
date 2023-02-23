@@ -4,6 +4,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.core.redis.RedisCache;
+import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +34,8 @@ import com.ruoyi.system.mapper.SysUserPostMapper;
 import com.ruoyi.system.mapper.SysUserRoleMapper;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
+
+import static com.ruoyi.common.constant.CacheConstants.GEN_ASSIGN_KEYS;
 
 /**
  * 用户 业务层处理
@@ -59,6 +66,8 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Autowired
     protected Validator validator;
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 根据条件分页查询用户列表
@@ -530,6 +539,9 @@ public class SysUserServiceImpl implements ISysUserService {
             previewAssignData.add(item);
         }
         result.put("previewAssignData", previewAssignData);
+        String key = UUID.randomUUID().toString().replace("-","");
+        result.put("key",key);
+        redisCache.setCacheObject(GEN_ASSIGN_KEYS+key,JSON.toJSONString(result));
         return result;
     }
 }

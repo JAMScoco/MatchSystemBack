@@ -1,21 +1,29 @@
 package com.jamscoco.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jamscoco.domain.WorksMember;
+import com.jamscoco.domain.WorksScore;
 import com.jamscoco.domain.WorksTeacher;
 import com.jamscoco.mapper.WorksMemberMapper;
+import com.jamscoco.mapper.WorksScoreMapper;
 import com.jamscoco.mapper.WorksTeacherMapper;
 import com.jamscoco.vo.WorkInfo;
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.redis.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jamscoco.mapper.WorksMapper;
 import com.jamscoco.domain.Works;
 import com.jamscoco.service.IWorksService;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.ruoyi.common.constant.CacheConstants.GEN_ASSIGN_KEYS;
 
 /**
  * 作品Service业务层处理
@@ -32,6 +40,11 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
 
     @Autowired
     private WorksMemberMapper memberMapper;
+    @Autowired
+    private WorksScoreMapper worksScoreMapper;
+
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 查询作品列表
@@ -85,6 +98,53 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
     public List<String> waitReviewWorksDepartment(Long deptId, String matchId) {
         return baseMapper.waitReviewWorksDepartment(deptId,matchId);
     }
+
+    @Override
+    public String delPreAssign(String key) {
+        redisCache.deleteObject(GEN_ASSIGN_KEYS+key);
+        return "ok";
+    }
+
+    @Override
+    @Transactional
+    public String ensurePreAssign(String key) {
+        String type = null;
+        boolean knowType = false;
+        String json = redisCache.getCacheObject(GEN_ASSIGN_KEYS+key);
+        delPreAssign(key);
+        List<JSONObject> array = JSON.parseObject(json).getList("previewAssignData",JSONObject.class);
+        for (JSONObject jsonObject : array) {
+            String workId = jsonObject.getString("workId");
+            if (!knowType){
+                WorkInfo work = baseMapper.getWorkInfoById(workId);
+                if (work.getState() == 1) {
+                    type = "1";
+                }
+                if (work.getState() == 2) {
+                    type = "0";
+                }
+                knowType = true;
+            }
+            for (String k : jsonObject.keySet()) {
+                Object obj = jsonObject.get(k);
+                if(obj instanceof JSONObject){
+                    String userId = ((JSONObject) obj).getString("userId");
+                    WorksScore worksScore = new WorksScore();
+                    worksScore.setWorkId(workId);
+                    worksScore.setUserId(userId);
+                    worksScore.setType(type);
+                    worksScoreMapper.insert(worksScore);
+                }
+            }
+        }
+        return "ok";
+    }
+
+    @Override
+    public List<String> waitReviewWorksSchool(String matchId) {
+        return baseMapper.waitReviewWorksSchool(matchId);
+    }
+
 
     private String insertRelation(Works works) {
         for (WorksMember member : works.getMemberList()) {

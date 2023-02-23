@@ -62,6 +62,7 @@ public class WorksController extends BaseController {
         if (roleType == 1L) {
             works.setDeptId(String.valueOf(getDeptId()));
         }
+        works.setMatchId(currentMatch.getId());
         List<WorkInfo> list = worksService.selectWorksList(works);
         return getDataTable(list);
     }

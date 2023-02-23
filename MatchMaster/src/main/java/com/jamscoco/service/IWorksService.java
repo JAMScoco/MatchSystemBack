@@ -4,6 +4,7 @@ import java.util.List;
 import com.jamscoco.domain.Works;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jamscoco.vo.WorkInfo;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 作品Service接口
@@ -46,4 +47,11 @@ public interface IWorksService extends IService<Works>
      * @return 当前赛事本院系待评审作品id
      */
     List<String> waitReviewWorksDepartment(Long deptId, String matchId);
+
+    String delPreAssign(String key);
+
+    @Transactional
+    String ensurePreAssign(String key);
+
+    List<String> waitReviewWorksSchool(String matchId);
 }
