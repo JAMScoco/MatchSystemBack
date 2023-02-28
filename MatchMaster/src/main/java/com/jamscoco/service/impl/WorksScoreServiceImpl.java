@@ -3,6 +3,8 @@ package com.jamscoco.service.impl;
 import java.util.*;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jamscoco.dto.ScoreDto;
+import com.jamscoco.dto.ScoreSubmitDto;
 import com.jamscoco.mapper.WorksMapper;
 import com.jamscoco.vo.ScoreVo;
 import com.jamscoco.vo.WorkInfo;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.jamscoco.mapper.WorksScoreMapper;
 import com.jamscoco.domain.WorksScore;
 import com.jamscoco.service.IWorksScoreService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 评审分值Service业务层处理
@@ -27,12 +30,12 @@ public class WorksScoreServiceImpl extends ServiceImpl<WorksScoreMapper, WorksSc
     /**
      * 查询评审分值列表
      *
-     * @param worksScore 评审分值
+     * @param scoreDto 检索条件
      * @return 评审分值
      */
     @Override
-    public List<WorksScore> selectWorksScoreList(WorksScore worksScore) {
-        return baseMapper.selectWorksScoreList(worksScore);
+    public List<ScoreVo> selectWorksScoreList(ScoreDto scoreDto) {
+        return baseMapper.selectWorksScoreList(scoreDto);
     }
 
     @Override
@@ -83,5 +86,11 @@ public class WorksScoreServiceImpl extends ServiceImpl<WorksScoreMapper, WorksSc
         result.put("heads",heads);
         result.put("target",target);
         return result;
+    }
+
+    @Override
+    @Transactional
+    public int submitScore(ScoreSubmitDto scoreSubmitDto) {
+        return baseMapper.setScoreDetails(scoreSubmitDto);
     }
 }

@@ -87,7 +87,7 @@ public class WorksController extends BaseController {
     /**
      * 获取作品详细信息
      */
-    @PreAuthorize("@ss.hasPermi('works:work:query')")
+    @PreAuthorize("@ss.hasAnyPermi('works:work:query,review:work:detail')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") String id) {
         return AjaxResult.success(worksService.getWorkInfoById(id));

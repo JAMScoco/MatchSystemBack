@@ -29,4 +29,14 @@ public class MatchReviewTemplateServiceImpl extends ServiceImpl<MatchReviewTempl
     {
         return baseMapper.selectMatchReviewTemplateList(matchReviewTemplate);
     }
+
+    @Override
+    public  List<MatchReviewTemplate> getReviewTemplateByScoreId(String scoreId) {
+        List<MatchReviewTemplate> result = baseMapper.getReviewTemplateByScoreId(scoreId);
+        for (MatchReviewTemplate template : result) {
+            String replace = template.getContent().replace("\n", "<br>");
+            template.setContent(replace);
+        }
+        return result;
+    }
 }

@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.jamscoco.domain.WorksScore;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jamscoco.dto.ScoreDto;
+import com.jamscoco.dto.ScoreSubmitDto;
 import com.jamscoco.vo.ScoreVo;
 
 /**
@@ -18,12 +20,14 @@ public interface IWorksScoreService extends IService<WorksScore>
     /**
      * 查询评审分值列表
      *
-     * @param worksScore 评审分值
+     * @param scoreDto 检索条件
      * @return 评审分值集合
      */
-    public List<WorksScore> selectWorksScoreList(WorksScore worksScore);
+    public List<ScoreVo> selectWorksScoreList(ScoreDto scoreDto);
 
     boolean checkGenAssign(List<String> waitReviewWorkIds);
 
     Map<String,Object> getReviewDetails(String matchId, Long type);
+
+    int submitScore(ScoreSubmitDto scoreSubmitDto);
 }

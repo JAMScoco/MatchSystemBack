@@ -60,7 +60,7 @@ public class MatchController extends BaseController {
     @PostMapping("/export")
     public void export(HttpServletResponse response, Match match) {
         List<Match> list = matchService.selectHistoryMatchList(match);
-        ExcelUtil<Match> util = new ExcelUtil<Match>(Match.class);
+        ExcelUtil<Match> util = new ExcelUtil<>(Match.class);
         util.exportExcel(response, list, "赛事数据");
     }
 

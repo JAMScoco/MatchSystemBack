@@ -6,18 +6,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jamscoco.domain.Match;
+import com.jamscoco.dto.ScoreDto;
+import com.jamscoco.dto.ScoreSubmitDto;
+import com.jamscoco.service.IMatchReviewTemplateService;
 import com.jamscoco.service.IMatchService;
+import com.jamscoco.service.IWorksService;
 import com.jamscoco.vo.ScoreVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -43,16 +40,25 @@ public class WorksScoreController extends BaseController
     @Autowired
     private IMatchService matchService;
 
+    @Autowired
+    private IMatchReviewTemplateService matchReviewTemplateService;
+
 
     /**
      * 查询评审分值列表
      */
     @PreAuthorize("@ss.hasPermi('work:score:list')")
     @GetMapping("/list")
-    public TableDataInfo list(WorksScore worksScore)
+    public TableDataInfo list(ScoreDto scoreDto)
     {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return new TableDataInfo(null,0);
+        }
         startPage();
-        List<WorksScore> list = worksScoreService.selectWorksScoreList(worksScore);
+        scoreDto.setMatchId(currentMatch.getId());
+        scoreDto.setUserId(String.valueOf(getUserId()));
+        List<ScoreVo> list = worksScoreService.selectWorksScoreList(scoreDto);
         return getDataTable(list);
     }
 
@@ -78,53 +84,32 @@ public class WorksScoreController extends BaseController
     @PreAuthorize("@ss.hasPermi('work:score:export')")
     @Log(title = "评审分值", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WorksScore worksScore)
+    public void export(HttpServletResponse response, ScoreDto scoreDto)
     {
-        List<WorksScore> list = worksScoreService.selectWorksScoreList(worksScore);
-        ExcelUtil<WorksScore> util = new ExcelUtil<WorksScore>(WorksScore.class);
+        List<ScoreVo> list = worksScoreService.selectWorksScoreList(scoreDto);
+        ExcelUtil<ScoreVo> util = new ExcelUtil<ScoreVo>(ScoreVo.class);
         util.exportExcel(response, list, "评审分值数据");
     }
 
     /**
-     * 获取评审分值详细信息
+     * 获取评审模板
      */
     @PreAuthorize("@ss.hasPermi('work:score:query')")
-    @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") String id)
+    @GetMapping(value = "getReviewTemplate/{id}")
+    public AjaxResult getReviewTemplateInfo(@PathVariable("id") String id)
     {
-        return AjaxResult.success(worksScoreService.getById(id));
+        return AjaxResult.success(matchReviewTemplateService.getReviewTemplateByScoreId(id));
     }
 
     /**
-     * 新增评审分值
-     */
-    @PreAuthorize("@ss.hasPermi('work:score:add')")
-    @Log(title = "评审分值", businessType = BusinessType.INSERT)
-    @PostMapping
-    public AjaxResult add(@RequestBody WorksScore worksScore)
-    {
-        return toAjax(worksScoreService.save(worksScore));
-    }
-
-    /**
-     * 修改评审分值
+     * 提交评审分值
      */
     @PreAuthorize("@ss.hasPermi('work:score:edit')")
     @Log(title = "评审分值", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody WorksScore worksScore)
+    @PostMapping("submit")
+    public AjaxResult edit(@RequestBody ScoreSubmitDto scoreSubmitDto)
     {
-        return toAjax(worksScoreService.updateById(worksScore));
-    }
-
-    /**
-     * 删除评审分值
-     */
-    @PreAuthorize("@ss.hasPermi('work:score:remove')")
-    @Log(title = "评审分值", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable String[] ids)
-    {
-        return toAjax(worksScoreService.removeByIds(Arrays.asList(ids)));
+        System.out.println(scoreSubmitDto.toString());
+        return toAjax(worksScoreService.submitScore(scoreSubmitDto));
     }
 }

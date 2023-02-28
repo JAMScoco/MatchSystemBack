@@ -22,4 +22,5 @@ public interface MatchReviewTemplateMapper extends BaseMapper<MatchReviewTemplat
      */
     public List<MatchReviewTemplate> selectMatchReviewTemplateList(MatchReviewTemplate matchReviewTemplate);
 
+    List<MatchReviewTemplate> getReviewTemplateByScoreId(String scoreId);
 }

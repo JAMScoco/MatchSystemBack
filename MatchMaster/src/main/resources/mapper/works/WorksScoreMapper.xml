@@ -4,46 +4,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jamscoco.mapper.WorksScoreMapper">
 
-    <resultMap type="com.jamscoco.domain.WorksScore" id="WorksScoreResult">
-        <result property="id"    column="id"    />
-        <result property="workId"    column="work_id"    />
-        <result property="userId"    column="user_id"    />
-        <result property="type"    column="type"    />
-        <result property="scoreDetail"    column="score_detail"    />
-        <result property="delFlag"    column="del_flag"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
-    </resultMap>
-
     <sql id="selectWorksScoreVo">
-        select id, work_id, user_id, type, score_detail, del_flag, create_by, create_time, update_by, update_time, remark from works_score
+        select ws.id, ws.work_id, ws.user_id, w.name, su.true_name, ws.score_detail
+        from works_score as ws
+                 left join works w on w.id = ws.work_id
+                 left join sys_user su on ws.user_id = su.user_id
     </sql>
+    <update id="setScoreDetails">
+        update works_score
+        set score_detail = #{details}
+        where id = #{id}
+    </update>
 
-    <select id="selectWorksScoreList" parameterType="com.jamscoco.domain.WorksScore" resultMap="WorksScoreResult">
+    <select id="selectWorksScoreList" parameterType="com.jamscoco.dto.ScoreDto" resultType="com.jamscoco.vo.ScoreVo">
         <include refid="selectWorksScoreVo"/>
         <where>
-            <if test="workId != null  and workId != ''"> and work_id = #{workId}</if>
-            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
-            <if test="type != null  and type != ''"> and type = #{type}</if>
-            <if test="scoreDetail != null  and scoreDetail != ''"> and score_detail = #{scoreDetail}</if>
+            w.match_id = #{matchId}
+            and ws.type = #{type}
+            and ws.user_id = #{userId}
+            <if test="workName != null  and workName != ''"> and w.name like concat('%', #{workName}, '%')</if>
         </where>
     </select>
+
     <select id="check" resultType="java.lang.Integer">
         select count(*)
         from works_score as ws
         where ws.work_id = #{id}
           and ws.type = #{type}
     </select>
+
     <select id="getReviewDetails" resultType="com.jamscoco.vo.ScoreVo">
-        select ws.id, ws.work_id, ws.user_id, w.name, su.true_name, ws.score_detail
-        from works_score as ws
-                 left join works w on w.id = ws.work_id
-                 left join sys_user su on ws.user_id = su.user_id
+        <include refid="selectWorksScoreVo"/>
         where w.match_id = #{matchId}
-          and ws.type = #{type}
+        and ws.type = #{type}
         order by ws.work_id
     </select>
 

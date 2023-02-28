@@ -19,4 +19,6 @@ public interface IMatchReviewTemplateService extends IService<MatchReviewTemplat
      * @return 评审模板集合
      */
     public List<MatchReviewTemplate> selectMatchReviewTemplateList(MatchReviewTemplate matchReviewTemplate);
+
+    List<MatchReviewTemplate> getReviewTemplateByScoreId(String scoreId);
 }
