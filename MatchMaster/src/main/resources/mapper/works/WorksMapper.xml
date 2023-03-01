@@ -39,6 +39,28 @@
         set state = #{state}
         where id = #{id}
     </update>
+    <update id="updateDepartmentAverageScore">
+        update works set department_average_score = #{score} where id = #{id}
+    </update>
+    <update id="updateSchoolAverageScore">
+        update works set school_average_score = #{score} where id = #{id}
+    </update>
+    <update id="updateDepartmentSort">
+        update works set department_sort = #{sort} where id = #{id}
+    </update>
+    <update id="updateSchoolSort">
+        update works set school_sort = #{sort} where id = #{id}
+    </update>
+    <update id="exchangeSchoolSort">
+        UPDATE works AS a
+            JOIN works AS b ON a.id = #{id1} AND b.id = #{id2}
+        SET a.school_sort = b.school_sort, b.school_sort = a.school_sort
+    </update>
+    <update id="exchangeDepartmentSort">
+        UPDATE works AS a
+            JOIN works AS b ON a.id = #{id1} AND b.id = #{id2}
+        SET a.department_sort = b.department_sort, b.department_sort = a.department_sort
+    </update>
 
     <select id="selectWorksList" parameterType="com.jamscoco.domain.Works" resultType="com.jamscoco.vo.WorkInfo">
         <include refid="selectWorksVo"/>
@@ -69,6 +91,7 @@
             and u.dept_id = d.dept_id
         </where>
     </select>
+
     <select id="waitReviewWorksDepartment" resultType="java.lang.String">
         select w.id
         from works w
@@ -77,11 +100,40 @@
           and w.match_id = #{matchId}
           and w.state = 1
     </select>
+
     <select id="waitReviewWorksSchool" resultType="java.lang.String">
         select w.id
         from works
         where works.state = 2
           and works.match_id = #{matchId}
+    </select>
+
+    <select id="selectNextIdOnUpSchoolSort" resultType="java.lang.String">
+        SELECT id
+        FROM works
+        WHERE school_sort <![CDATA[ < ]]>
+              (SELECT school_sort FROM works WHERE id = #{workId} ORDER BY school_sort DESC limit 1)
+    </select>
+
+    <select id="selectNextIdOnDownSchoolSort" resultType="java.lang.String">
+        SELECT id
+        FROM works
+        WHERE school_sort <![CDATA[ > ]]>
+              (SELECT school_sort FROM works WHERE id = #{workId} ORDER BY school_sort ASC limit 1)
+    </select>
+
+    <select id="selectNextIdOnUpDepartment" resultType="java.lang.String">
+        SELECT id
+        FROM works
+        WHERE department_sort <![CDATA[ < ]]>
+              (SELECT department_sort FROM works WHERE id = #{workId} ORDER BY department_sort DESC limit 1)
+    </select>
+
+    <select id="selectNextIdOnDownDepartment" resultType="java.lang.String">
+        SELECT id
+        FROM works
+        WHERE department_sort <![CDATA[ > ]]>
+              (SELECT department_sort FROM works WHERE id = #{workId} ORDER BY department_sort ASC limit 1)
     </select>
 
 

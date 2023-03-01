@@ -3,6 +3,7 @@ package com.jamscoco.service;
 import java.util.List;
 import com.jamscoco.domain.Works;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jamscoco.dto.SortMoveDto;
 import com.jamscoco.vo.WorkInfo;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,4 +55,8 @@ public interface IWorksService extends IService<Works>
     String ensurePreAssign(String key);
 
     List<String> waitReviewWorksSchool(String matchId);
+
+    List<WorkInfo> getReviewResult(String matchId, Long roleType, Long deptId);
+
+    int move(SortMoveDto sortMoveDto, Long roleType);
 }

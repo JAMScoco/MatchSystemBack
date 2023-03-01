@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.date.DateUtil;
 import com.jamscoco.domain.Match;
+import com.jamscoco.dto.SortMoveDto;
 import com.jamscoco.service.IMatchService;
 import com.jamscoco.vo.WorkInfo;
 import com.ruoyi.common.constant.Constants;
@@ -218,4 +219,56 @@ public class WorksController extends BaseController {
         }
         return AjaxResult.success(worksService.waitReviewWorksDepartment(getDeptId(),currentMatch.getId()));
     }
+
+    /**
+     * 作品评审结果管理列表
+     */
+    @PreAuthorize("@ss.hasPermi('works:work:edit')")
+    @GetMapping("/result")
+    public AjaxResult getReviewResult() {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.success("当前没有正在进行中的赛事");
+        }
+
+        Date now = new Date();
+        Long roleType = getRoleType();
+        if(roleType == 1L){
+            //当前是否在院系评审结束后
+            if (DateUtil.compare(now, currentMatch.getEndReviewTimeDepartment()) < 0) {
+                return AjaxResult.success("院系评审未结束，请评审结束后查看评审结果");
+            }
+        }else {
+            //当前是否在校级评审结束后
+            if (DateUtil.compare(now, currentMatch.getEndReviewTimeSchool()) < 0) {
+                return AjaxResult.success("校级评审未结束，请评审结束后查看评审结果");
+            }
+        }
+        return AjaxResult.success("ok",worksService.getReviewResult(currentMatch.getId(), roleType,getDeptId()));
+    }
+
+    @PreAuthorize("@ss.hasPermi('works:work:remove')")
+    @PostMapping("/moveSort")
+    public AjaxResult moveSort(@RequestBody SortMoveDto sortMoveDto) {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.error("当前没有正在进行中的赛事");
+        }
+
+        Date now = new Date();
+        Long roleType = getRoleType();
+        if(roleType == 1L){
+            if (DateUtil.compare(now, currentMatch.getStartReviewTimeSchool()) > 0) {
+                return AjaxResult.error("校级评审已开始，无法修改排序");
+            }
+        } else{
+            if (DateUtil.compare(now, currentMatch.getEndTime()) > 0) {
+                return AjaxResult.error("本次比赛已结束，无法修改排序");
+            }
+        }
+        return toAjax(worksService.move(sortMoveDto,roleType));
+    }
+
+
+
 }

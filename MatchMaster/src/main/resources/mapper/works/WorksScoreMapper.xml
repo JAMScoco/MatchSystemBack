@@ -39,5 +39,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         and ws.type = #{type}
         order by ws.work_id
     </select>
+    <select id="selectScoreDetailsByWorkByType" resultType="java.lang.String">
+        select score_detail from works_score where work_id = #{workId} and type = #{type}
+    </select>
 
 </mapper>
