@@ -53,4 +53,6 @@ public interface WorksMapper extends BaseMapper<Works>
     int exchangeSchoolSort(@Param("id1")String workId,@Param("id2") String nextId);
     @InterceptorIgnore(blockAttack = "true")
     int exchangeDepartmentSort(@Param("id1")String workId,@Param("id2") String nextId);
+
+    int setState(@Param("id")String id,@Param("state") long state);
 }

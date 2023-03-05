@@ -197,6 +197,11 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
         }
     }
 
+    @Override
+    public int recommend(String id, Long roleType) {
+        return baseMapper.setState(id,3 - roleType);
+    }
+
     private int moveUpSchool(String workId) {
         String nextId = baseMapper.selectNextIdOnUpSchoolSort(workId);
         if (nextId == null || "".equals(nextId)){

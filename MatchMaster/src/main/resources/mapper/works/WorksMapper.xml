@@ -61,6 +61,9 @@
             JOIN works AS b ON a.id = #{id1} AND b.id = #{id2}
         SET a.department_sort = b.department_sort, b.department_sort = a.department_sort
     </update>
+    <update id="setState">
+        UPDATE works set state = #{state} where id = #{id}
+    </update>
 
     <select id="selectWorksList" parameterType="com.jamscoco.domain.Works" resultType="com.jamscoco.vo.WorkInfo">
         <include refid="selectWorksVo"/>
@@ -102,7 +105,7 @@
     </select>
 
     <select id="waitReviewWorksSchool" resultType="java.lang.String">
-        select w.id
+        select works.id
         from works
         where works.state = 2
           and works.match_id = #{matchId}

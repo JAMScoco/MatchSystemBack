@@ -1,9 +1,6 @@
 package com.jamscoco.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -149,6 +146,27 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
             initRecommendNum(matchId, dept);
         }
         return quota == null ? 0 : quota;
+    }
+
+    @Transactional
+    @Override
+    public Integer queryReviewCount(String matchId, Long dept) {
+        Integer reviewCount = baseMapper.selectReviewCount(matchId, String.valueOf(dept));
+        if (reviewCount == null){
+            initReviewCount(matchId, dept);
+        }
+        return reviewCount == null ? 0 : reviewCount;
+    }
+
+    @Transactional
+    @Override
+    public Integer updateReviewCount(String matchId, Long deptId, Integer reviewCount) {
+        return baseMapper.updateReviewCount(matchId, String.valueOf(deptId), reviewCount);
+    }
+
+    private void initReviewCount(String matchId, Long dept) {
+        String id = UUID.randomUUID().toString().replace("-", "");
+        baseMapper.insertReviewCount(matchId,String.valueOf(dept),id);
     }
 
     private void initRecommendNum(String matchId, String dept) {

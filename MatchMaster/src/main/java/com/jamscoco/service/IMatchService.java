@@ -1,6 +1,8 @@
 package com.jamscoco.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.jamscoco.domain.Match;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jamscoco.dto.MatchFileDto;
@@ -60,4 +62,8 @@ public interface IMatchService extends IService<Match>
     Integer queryRecommendNum(String matchId, String dept);
 
     int saveRecommendNum(String matchId, String dept, Integer quota);
+
+    Integer queryReviewCount(String id, Long deptId);
+
+    Integer updateReviewCount(String matchId, Long deptId, Integer reviewCount);
 }

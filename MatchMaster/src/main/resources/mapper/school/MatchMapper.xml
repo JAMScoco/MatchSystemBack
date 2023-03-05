@@ -44,6 +44,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertRecommendNum">
         insert into match_recommend_quota(id,match_id,department_id,quota,remark,del_flag) values (#{id},#{matchId},#{dept},0,'推荐名额',0)
     </insert>
+    <insert id="insertReviewCount">
+        insert into match_recommend_quota(id,match_id,department_id,quota,remark,del_flag) values (#{id},#{matchId},#{dept},3,'评审数量',0)
+    </insert>
     <!--    新增赛事文件-->
     <update id="addMatchFile">
         update match_info
@@ -60,6 +63,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
     <update id="updateRecommendNum">
         update match_recommend_quota set quota = #{quota} where match_id = #{matchId} and department_id = #{dept} and remark = '推荐名额'
+    </update>
+    <update id="updateReviewCount">
+        update match_recommend_quota set quota = #{reviewCount} where match_id = #{matchId} and department_id = #{deptId} and remark = '评审数量'
     </update>
     <!--    删除赛事文件-->
     <delete id="delMatchFile">
@@ -87,6 +93,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="selectRecommendNum" resultType="java.lang.Integer">
         select quota from match_recommend_quota where match_id = #{matchId} and department_id = #{dept} and remark = '推荐名额'
+    </select>
+    <select id="selectReviewCount" resultType="java.lang.Integer">
+        select quota from match_recommend_quota where match_id = #{matchId} and department_id = #{dept} and remark = '评审数量'
     </select>
 
 </mapper>

@@ -144,21 +144,22 @@ public class ReviewerController extends BaseController {
      */
     @PreAuthorize("@ss.hasPermi('works:work:edit')")
     @PostMapping("/genAssignData")
-    public AjaxResult getAssignData(@RequestBody List<SysUser> reviewers) {
+    public AjaxResult getAssignData(@RequestBody List<SysUser> reviewers,@RequestParam("reviewCount")Integer reviewCount) {
         Match currentMatch = matchService.getCurrentMatch();
         if (null == currentMatch) {
             return AjaxResult.error("当前没有进行中的赛事");
         }
         List<String> waitReviewWorkIds = null;
         long roleType = getRoleType();
-        if(roleType == 1L){
+        if (roleType == 1L) {
             //获取当前赛事本院系待评审作品id
+            matchService.updateReviewCount(currentMatch.getId(), getDeptId(),reviewCount);
             waitReviewWorkIds = worksService.waitReviewWorksDepartment(getDeptId(), currentMatch.getId());
-        }
-        if(roleType == 0L){
+            return AjaxResult.success(userService.genAssignData(reviewers, Long.valueOf(matchService.queryReviewCount(currentMatch.getId(), getDeptId())), waitReviewWorkIds));
+        } else {
             waitReviewWorkIds = worksService.waitReviewWorksSchool(currentMatch.getId());
+            return AjaxResult.success(userService.genAssignData(reviewers, currentMatch.getReviewNumber(), waitReviewWorkIds));
         }
-        return AjaxResult.success(userService.genAssignData(reviewers, currentMatch.getReviewNumber(), waitReviewWorkIds));
     }
 
     /**
@@ -201,7 +202,7 @@ public class ReviewerController extends BaseController {
         //2.报名时间是否结束
         Date now = new Date();
         if (DateUtil.compare(now, currentMatch.getEndSubmitTime()) < 0) {
-            return AjaxResult.success("报名时间号未结束");
+            return AjaxResult.success("报名时间未结束");
         }
         //3. 是否还有作品国家报名截图未审核
         Works works = new Works();
@@ -210,19 +211,24 @@ public class ReviewerController extends BaseController {
         if (list.size() > 0) {
             return AjaxResult.success("还有作品国家报名截图未审核");
         }
+        long roleType = getRoleType();
+        if (roleType == 0L){
+            if (DateUtil.compare(now, currentMatch.getEndReviewTimeDepartment()) < 0) {
+                return AjaxResult.success("院系评审未结束");
+            }
+        }
         //4. 是否已经生成评审任务
         List<String> waitReviewWorkIds = null;
-        boolean hasGenAssign = false;
-        long roleType = getRoleType();
-        if(roleType == 1L){
+        boolean hasGenAssign;
+        if (roleType == 1L) {
             //获取当前赛事本院系待评审作品id
             waitReviewWorkIds = worksService.waitReviewWorksDepartment(getDeptId(), currentMatch.getId());
         }
-        if(roleType == 0L){
+        if (roleType == 0L) {
             waitReviewWorkIds = worksService.waitReviewWorksSchool(currentMatch.getId());
         }
         hasGenAssign = worksScoreService.checkGenAssign(waitReviewWorkIds);
-        if (hasGenAssign){
+        if (hasGenAssign) {
             return AjaxResult.success("评审任务已经生成，请查看");
         }
         return AjaxResult.success("ok");

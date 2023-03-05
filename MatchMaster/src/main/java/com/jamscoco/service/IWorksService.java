@@ -59,4 +59,6 @@ public interface IWorksService extends IService<Works>
     List<WorkInfo> getReviewResult(String matchId, Long roleType, Long deptId);
 
     int move(SortMoveDto sortMoveDto, Long roleType);
+
+    int recommend(String id, Long roleType);
 }

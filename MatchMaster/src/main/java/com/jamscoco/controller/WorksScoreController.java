@@ -71,7 +71,7 @@ public class WorksScoreController extends BaseController
     {
         Match currentMatch = matchService.getCurrentMatch();
         if (null == currentMatch) {
-            return AjaxResult.error("当前没有正在进行的赛事，请新增赛事！");
+            return AjaxResult.error("当前没有正在进行的赛事");
         }
         Map<String,Object> reviewDetails = worksScoreService.getReviewDetails(currentMatch.getId(), getRoleType());
         return AjaxResult.success(reviewDetails);
@@ -109,7 +109,6 @@ public class WorksScoreController extends BaseController
     @PostMapping("submit")
     public AjaxResult edit(@RequestBody ScoreSubmitDto scoreSubmitDto)
     {
-        System.out.println(scoreSubmitDto.toString());
         return toAjax(worksScoreService.submitScore(scoreSubmitDto));
     }
 

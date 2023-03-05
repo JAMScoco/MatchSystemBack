@@ -1,9 +1,6 @@
 package com.jamscoco.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.date.DateUtil;
@@ -211,13 +208,19 @@ public class WorksController extends BaseController {
     }
 
     @PreAuthorize("@ss.hasPermi('works:work:remove')")
-    @GetMapping("/waitReviewWorksDepartment")
-    public AjaxResult waitReviewWorksDepartment() {
+    @GetMapping("/waitReviewWorks")
+    public AjaxResult waitReviewWorks() {
         Match currentMatch = matchService.getCurrentMatch();
         if (null == currentMatch) {
             return AjaxResult.success("当前没有正在进行中的赛事");
         }
-        return AjaxResult.success(worksService.waitReviewWorksDepartment(getDeptId(),currentMatch.getId()));
+        Long roleType = getRoleType();
+        if (roleType == 1L){
+            return AjaxResult.success(worksService.waitReviewWorksDepartment(getDeptId(), currentMatch.getId()));
+        }else {
+            return AjaxResult.success(worksService.waitReviewWorksSchool(currentMatch.getId()));
+        }
+
     }
 
     /**
@@ -233,18 +236,32 @@ public class WorksController extends BaseController {
 
         Date now = new Date();
         Long roleType = getRoleType();
-        if(roleType == 1L){
+        if (roleType == 1L) {
             //当前是否在院系评审结束后
             if (DateUtil.compare(now, currentMatch.getEndReviewTimeDepartment()) < 0) {
                 return AjaxResult.success("院系评审未结束，请评审结束后查看评审结果");
             }
-        }else {
+        } else {
             //当前是否在校级评审结束后
             if (DateUtil.compare(now, currentMatch.getEndReviewTimeSchool()) < 0) {
                 return AjaxResult.success("校级评审未结束，请评审结束后查看评审结果");
             }
         }
-        return AjaxResult.success("ok",worksService.getReviewResult(currentMatch.getId(), roleType,getDeptId()));
+        List<WorkInfo> reviewResult = worksService.getReviewResult(currentMatch.getId(), roleType, getDeptId());
+        Map<String, Object> result = new HashMap<>();
+        result.put("result", reviewResult);
+        result.put("hasRecommended", countHasRecommended(reviewResult, roleType));
+        return AjaxResult.success("ok", result);
+    }
+
+    private int countHasRecommended(List<WorkInfo> reviewResult, Long roleType) {
+        int count = 0;
+        for (WorkInfo workInfo : reviewResult) {
+            if (workInfo.getState() == (3L - roleType)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @PreAuthorize("@ss.hasPermi('works:work:remove')")
@@ -257,18 +274,24 @@ public class WorksController extends BaseController {
 
         Date now = new Date();
         Long roleType = getRoleType();
-        if(roleType == 1L){
+        if (roleType == 1L) {
             if (DateUtil.compare(now, currentMatch.getStartReviewTimeSchool()) > 0) {
                 return AjaxResult.error("校级评审已开始，无法修改排序");
             }
-        } else{
+        } else {
             if (DateUtil.compare(now, currentMatch.getEndTime()) > 0) {
                 return AjaxResult.error("本次比赛已结束，无法修改排序");
             }
         }
-        return toAjax(worksService.move(sortMoveDto,roleType));
+        return toAjax(worksService.move(sortMoveDto, roleType));
     }
 
-
-
+    /**
+     * 推荐作品
+     */
+    @PreAuthorize("@ss.hasAnyPermi('works:work:query,review:work:detail')")
+    @PostMapping(value = "recommend/{id}")
+    public AjaxResult recommend(@PathVariable("id") String id) {
+        return AjaxResult.success(worksService.recommend(id,getRoleType()));
+    }
 }

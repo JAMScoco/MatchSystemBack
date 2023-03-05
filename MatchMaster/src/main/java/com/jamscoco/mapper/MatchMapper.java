@@ -42,5 +42,11 @@ public interface MatchMapper extends BaseMapper<Match>
 
     int updateRecommendNum(@Param("matchId")String matchId, @Param("dept")String dept,@Param("quota")Integer quota);
 
-    void insertRecommendNum(@Param("matchId") String matchId, @Param("dept")String dept,@Param("id") String id);
+    int insertRecommendNum(@Param("matchId") String matchId, @Param("dept")String dept,@Param("id") String id);
+
+    Integer selectReviewCount(@Param("matchId") String matchId, @Param("dept")String dept);
+
+    int insertReviewCount(@Param("matchId") String matchId, @Param("dept")String dept,@Param("id") String id);
+
+    Integer updateReviewCount(@Param("matchId")String matchId, @Param("deptId")String deptId,@Param("reviewCount")Integer reviewCount);
 }

@@ -1,7 +1,9 @@
 package com.jamscoco.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jamscoco.dto.MatchFileDto;
@@ -184,6 +186,24 @@ public class MatchController extends BaseController {
         }else{
             return toAjax(matchService.saveRecommendNum(currentMatch.getId(),"school",quota));
         }
+    }
+
+    @Anonymous
+    @GetMapping("/queryReviewCount")
+    public AjaxResult queryReviewCount() {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.error("当前没有正在进行的赛事！");
+        }
+        Long roleType = getRoleType();
+        Map<String,Object> result = new HashMap<>();
+        if (roleType == 1L){
+            result.put("count",matchService.queryReviewCount(currentMatch.getId(),getDeptId()));
+        }else{
+            result.put("count",currentMatch.getReviewNumber());
+        }
+        result.put("modify",roleType != 1L);
+        return AjaxResult.success(result);
     }
 
 }
