@@ -11,14 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -151,6 +144,7 @@ public class MatchController extends BaseController {
     /**
      * 查询大赛相关文件
      */
+    @Anonymous
     @GetMapping("/getFiles")
     public AjaxResult getFiles() {
         Match currentMatch = matchService.getCurrentMatch();
@@ -162,5 +156,34 @@ public class MatchController extends BaseController {
         }
     }
 
+    @Anonymous
+    @GetMapping("/queryRecommendNum")
+    public AjaxResult queryRecommendNum() {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.error("当前没有正在进行的赛事！");
+        }
+        Long roleType = getRoleType();
+        if (roleType == 1L){
+            return AjaxResult.success(matchService.queryRecommendNum(currentMatch.getId(),String.valueOf(getDeptId())));
+        }else{
+            return AjaxResult.success(matchService.queryRecommendNum(currentMatch.getId(),"school"));
+        }
+    }
+
+    @PreAuthorize("@ss.hasPermi('match:history:edit')")
+    @PostMapping("/saveRecommendNum")
+    public AjaxResult saveRecommendNum(@RequestParam("quota")Integer quota) {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.error("当前没有正在进行的赛事！");
+        }
+        Long roleType = getRoleType();
+        if (roleType == 1L){
+            return toAjax(matchService.saveRecommendNum(currentMatch.getId(),String.valueOf(getDeptId()),quota));
+        }else{
+            return toAjax(matchService.saveRecommendNum(currentMatch.getId(),"school",quota));
+        }
+    }
 
 }

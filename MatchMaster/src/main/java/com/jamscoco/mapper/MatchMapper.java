@@ -37,4 +37,10 @@ public interface MatchMapper extends BaseMapper<Match>
      * @return
      */
     int delMatchFile(MatchFileDto matchFileDto);
+
+    Integer selectRecommendNum(@Param("matchId") String matchId, @Param("dept")String dept);
+
+    int updateRecommendNum(@Param("matchId")String matchId, @Param("dept")String dept,@Param("quota")Integer quota);
+
+    void insertRecommendNum(@Param("matchId") String matchId, @Param("dept")String dept,@Param("id") String id);
 }

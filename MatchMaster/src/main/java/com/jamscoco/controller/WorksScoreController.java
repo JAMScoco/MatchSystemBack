@@ -112,4 +112,16 @@ public class WorksScoreController extends BaseController
         System.out.println(scoreSubmitDto.toString());
         return toAjax(worksScoreService.submitScore(scoreSubmitDto));
     }
+
+
+    /**
+     * 获取得分详细
+     */
+    @PreAuthorize("@ss.hasPermi('work:score:query')")
+    @GetMapping(value = "getGoalDetail/{id}")
+    public AjaxResult getGoalDetail(@PathVariable("id") String id)
+    {
+        return AjaxResult.success(worksScoreService.getGoalDetail(id,getRoleType()));
+    }
+
 }

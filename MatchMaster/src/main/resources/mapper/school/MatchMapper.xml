@@ -41,7 +41,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectMatchVo">
         select id, name, logo, organizing_committee, address, postcode, email, expert_committee, qr_code, start_submit_time, end_submit_time, start_review_time_department, end_review_time_department, start_review_time_school, end_review_time_school, competition_notice, review_rules, student_operation_manual, competition_guide, college_school_operation_manual, business_cooperation_invitation, competition_review_manual, review_number, del_flag, create_by, create_time, update_by, update_time, remark, start_time, end_time from match_info
     </sql>
-<!--    新增赛事文件-->
+    <insert id="insertRecommendNum">
+        insert into match_recommend_quota(id,match_id,department_id,quota,remark,del_flag) values (#{id},#{matchId},#{dept},0,'推荐名额',0)
+    </insert>
+    <!--    新增赛事文件-->
     <update id="addMatchFile">
         update match_info
         <set>
@@ -55,7 +58,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </set>
         where id = #{matchId}
     </update>
-<!--    删除赛事文件-->
+    <update id="updateRecommendNum">
+        update match_recommend_quota set quota = #{quota} where match_id = #{matchId} and department_id = #{dept} and remark = '推荐名额'
+    </update>
+    <!--    删除赛事文件-->
     <delete id="delMatchFile">
         update match_info
         <set>
@@ -78,6 +84,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="endTime != null "> and end_time &lt;= #{endTime}</if>
             end_time &lt;= NOW()
         </where>
+    </select>
+    <select id="selectRecommendNum" resultType="java.lang.Integer">
+        select quota from match_recommend_quota where match_id = #{matchId} and department_id = #{dept} and remark = '推荐名额'
     </select>
 
 </mapper>

@@ -56,4 +56,8 @@ public interface IMatchService extends IService<Match>
      * @return
      */
     boolean delMatchFile(MatchFileDto matchFileDto);
+
+    Integer queryRecommendNum(String matchId, String dept);
+
+    int saveRecommendNum(String matchId, String dept, Integer quota);
 }

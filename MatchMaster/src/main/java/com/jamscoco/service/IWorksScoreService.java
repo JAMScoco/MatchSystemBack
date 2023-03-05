@@ -30,4 +30,6 @@ public interface IWorksScoreService extends IService<WorksScore>
     Map<String,Object> getReviewDetails(String matchId, Long type);
 
     int submitScore(ScoreSubmitDto scoreSubmitDto);
+
+    List<Object> getGoalDetail(String id, Long roleType);
 }

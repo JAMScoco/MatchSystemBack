@@ -93,4 +93,10 @@ public class WorksScoreServiceImpl extends ServiceImpl<WorksScoreMapper, WorksSc
     public int submitScore(ScoreSubmitDto scoreSubmitDto) {
         return baseMapper.setScoreDetails(scoreSubmitDto);
     }
+
+    @Override
+    public List<Object> getGoalDetail(String workId, Long roleType) {
+
+        return null;
+    }
 }

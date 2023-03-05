@@ -3,6 +3,7 @@ package com.jamscoco.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,6 +18,7 @@ import com.jamscoco.vo.MatchTracksVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jamscoco.service.IMatchService;
+import org.springframework.transaction.annotation.Transactional;
 
 import static cn.hutool.core.date.DatePattern.NORM_DATE_PATTERN;
 
@@ -79,6 +81,7 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
 
     /**
      * 查询大赛相关文件
+     *
      * @param match
      * @return
      */
@@ -118,6 +121,7 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
 
     /**
      * 新增赛事文件
+     *
      * @param matchFileDto
      * @return
      */
@@ -128,12 +132,34 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
 
     /**
      * 删除赛事文件
+     *
      * @param matchFileDto
      * @return
      */
     @Override
     public boolean delMatchFile(MatchFileDto matchFileDto) {
         return baseMapper.delMatchFile(matchFileDto) > 0;
+    }
+
+    @Transactional
+    @Override
+    public Integer queryRecommendNum(String matchId, String dept) {
+        Integer quota = baseMapper.selectRecommendNum(matchId, dept);
+        if (quota == null){
+            initRecommendNum(matchId, dept);
+        }
+        return quota == null ? 0 : quota;
+    }
+
+    private void initRecommendNum(String matchId, String dept) {
+        String id = UUID.randomUUID().toString().replace("-", "");
+        baseMapper.insertRecommendNum(matchId,dept,id);
+    }
+
+    @Transactional
+    @Override
+    public int saveRecommendNum(String matchId, String dept, Integer quota) {
+        return baseMapper.updateRecommendNum(matchId, dept, quota);
     }
 
     private List<MatchTracksVo> getMatchTracks(String matchId) {
