@@ -236,6 +236,8 @@
           and del_flag = '0'
         limit 1
     </select>
+    <select id="selectUserIdByUserName" resultType="java.lang.Long">
+        select user_id from sys_user where user_name = #{userName} and del_flag = '0'    </select>
 
     <insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
         insert into sys_user(

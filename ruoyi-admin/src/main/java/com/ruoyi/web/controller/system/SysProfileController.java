@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.system;
 
+import com.ruoyi.system.service.ISysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +40,9 @@ public class SysProfileController extends BaseController
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    ISysDeptService deptService;
+
     /**
      * 个人信息
      */
@@ -76,10 +80,12 @@ public class SysProfileController extends BaseController
         user.setUserId(sysUser.getUserId());
         user.setPassword(null);
         user.setAvatar(null);
-        user.setDeptId(null);
+//        user.setDeptId(null);
         if (userService.updateUserProfile(user) > 0)
         {
             // 更新缓存用户信息
+            sysUser.setDeptId(user.getDeptId());
+            sysUser.setDept(deptService.selectDeptById(user.getDeptId()));
             sysUser.setNickName(user.getNickName());
             sysUser.setPhonenumber(user.getPhonenumber());
             sysUser.setEmail(user.getEmail());
@@ -91,6 +97,7 @@ public class SysProfileController extends BaseController
             sysUser.setLevel(user.getLevel());
             sysUser.setIsSchool(user.getIsSchool());
             sysUser.setMajor(user.getMajor());
+            loginUser.setDeptId(user.getDeptId());
             tokenService.setLoginUser(loginUser);
             return AjaxResult.success();
         }

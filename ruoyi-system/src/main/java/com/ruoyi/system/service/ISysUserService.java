@@ -213,4 +213,6 @@ public interface ISysUserService
     int updateReviewer(SysUser user);
 
     Map<String,Object> genAssignData(List<SysUser> reviewers, Long reviewNumber, List<String> waitReviewWorkIds);
+
+    boolean registerStudent(SysUser sysUser);
 }

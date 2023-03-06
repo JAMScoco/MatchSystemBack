@@ -22,6 +22,9 @@ public class WorkInfo {
     @Excel(name = "负责人姓名")
     private String trueName;
 
+    @Excel(name = "负责人身份")
+    private String level;
+
 
     /**  负责人学号 */
     @Excel(name = "负责人学号")

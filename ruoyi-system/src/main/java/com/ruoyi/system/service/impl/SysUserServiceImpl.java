@@ -262,6 +262,18 @@ public class SysUserServiceImpl implements ISysUserService {
         return userMapper.insertUser(user) > 0;
     }
 
+    @Transactional
+    @Override
+    public boolean registerStudent(SysUser user) {
+        if (userMapper.insertUser(user) > 0) {
+            Long userId = userMapper.selectUserIdByUserName(user.getUserName());
+            insertUserRole(userId,new Long[]{100L});
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     /**
      * 修改保存用户信息
      *

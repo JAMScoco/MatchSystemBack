@@ -77,7 +77,7 @@ public class SysRegisterService
             sysUser.setUserName(username);
             sysUser.setNickName(username);
             sysUser.setPassword(SecurityUtils.encryptPassword(registerBody.getPassword()));
-            boolean regFlag = userService.registerUser(sysUser);
+            boolean regFlag = userService.registerStudent(sysUser);
             if (!regFlag)
             {
                 msg = "注册失败,请联系系统管理人员";

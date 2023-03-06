@@ -47,7 +47,9 @@ public class CaptchaController
     {
         AjaxResult ajax = AjaxResult.success();
         boolean captchaEnabled = configService.selectCaptchaEnabled();
+        boolean registerEnabled = Boolean.parseBoolean(configService.selectConfigByKey("sys.account.registerUser")) ;
         ajax.put("captchaEnabled", captchaEnabled);
+        ajax.put("registerEnabled", registerEnabled);
         if (!captchaEnabled)
         {
             return ajax;

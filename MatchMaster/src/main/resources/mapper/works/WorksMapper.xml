@@ -23,6 +23,7 @@
                u.true_name,
                u.sno,
                u.phonenumber,
+               u.level,
                d.dept_name,
                t.name as track_name,
                g.name as group_name,

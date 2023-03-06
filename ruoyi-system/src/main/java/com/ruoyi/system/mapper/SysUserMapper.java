@@ -131,4 +131,6 @@ public interface SysUserMapper
     int updateReviewer(SysUser user);
 
     List<SysUser> selectReviewerList(SysUser user);
+
+    Long selectUserIdByUserName(String userName);
 }
