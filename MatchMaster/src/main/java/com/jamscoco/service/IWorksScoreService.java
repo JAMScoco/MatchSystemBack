@@ -31,5 +31,5 @@ public interface IWorksScoreService extends IService<WorksScore>
 
     int submitScore(ScoreSubmitDto scoreSubmitDto);
 
-    List<Object> getGoalDetail(String id, Long roleType);
+    List<ScoreVo> getGoalDetail(String id, Long roleType);
 }

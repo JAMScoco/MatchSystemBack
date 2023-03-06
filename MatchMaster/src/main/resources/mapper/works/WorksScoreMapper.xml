@@ -42,5 +42,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectScoreDetailsByWorkByType" resultType="java.lang.String">
         select score_detail from works_score where work_id = #{workId} and type = #{type}
     </select>
+    <select id="selectGoalDetailByWork" resultType="com.jamscoco.vo.ScoreVo">
+        <include refid="selectWorksScoreVo"/>
+        where w.id = #{workId} and ws.type = #{type}
+    </select>
 
 </mapper>

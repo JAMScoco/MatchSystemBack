@@ -95,8 +95,11 @@ public class WorksScoreServiceImpl extends ServiceImpl<WorksScoreMapper, WorksSc
     }
 
     @Override
-    public List<Object> getGoalDetail(String workId, Long roleType) {
-
-        return null;
+    public List<ScoreVo> getGoalDetail(String workId, Long roleType) {
+        if(roleType == 1L) {
+            return baseMapper.selectGoalDetailByWork(workId,1L);
+        }else{
+            return baseMapper.selectGoalDetailByWork(workId,0L);
+        }
     }
 }

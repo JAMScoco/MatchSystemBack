@@ -12,6 +12,7 @@ import com.jamscoco.service.IMatchReviewTemplateService;
 import com.jamscoco.service.IMatchService;
 import com.jamscoco.service.IWorksService;
 import com.jamscoco.vo.ScoreVo;
+import com.ruoyi.common.annotation.Anonymous;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -116,7 +117,7 @@ public class WorksScoreController extends BaseController
     /**
      * 获取得分详细
      */
-    @PreAuthorize("@ss.hasPermi('work:score:query')")
+    @Anonymous
     @GetMapping(value = "getGoalDetail/{id}")
     public AjaxResult getGoalDetail(@PathVariable("id") String id)
     {

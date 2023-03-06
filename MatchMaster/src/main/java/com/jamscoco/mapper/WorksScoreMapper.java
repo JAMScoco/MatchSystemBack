@@ -33,4 +33,5 @@ public interface WorksScoreMapper extends BaseMapper<WorksScore>
     int setScoreDetails(ScoreSubmitDto scoreSubmitDto);
 
     List<String> selectScoreDetailsByWorkByType(@Param("workId")String workId, @Param("type") Long type);
+    List<ScoreVo> selectGoalDetailByWork(@Param("workId")String workId, @Param("type") Long type);
 }
