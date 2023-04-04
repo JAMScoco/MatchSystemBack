@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jamscoco.mapper.SchoolInfoUndergraduateStudentMapper">
+
+    <resultMap type="com.jamscoco.domain.SchoolInfoUndergraduateStudent" id="SchoolInfoUndergraduateStudentResult">
+        <result property="sno"    column="sno"    />
+        <result property="name"    column="name"    />
+        <result property="sex"    column="sex"    />
+        <result property="grade"    column="grade"    />
+        <result property="year"    column="year"    />
+        <result property="level"    column="level"    />
+        <result property="dept"    column="dept"    />
+        <result property="major"    column="major"    />
+        <result property="clazz"    column="clazz"    />
+    </resultMap>
+
+    <sql id="selectSchoolInfoUndergraduateStudentVo">
+        select sno, name, sex, grade, year, level, dept, major, clazz from school_info_undergraduate_student
+    </sql>
+    <delete id="clearTable">
+        delete from school_info_undergraduate_student
+    </delete>
+
+    <select id="selectSchoolInfoUndergraduateStudentList" parameterType="com.jamscoco.domain.SchoolInfoUndergraduateStudent" resultMap="SchoolInfoUndergraduateStudentResult">
+        <include refid="selectSchoolInfoUndergraduateStudentVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="grade != null  and grade != ''"> and grade = #{grade}</if>
+            <if test="year != null  and year != ''"> and year = #{year}</if>
+            <if test="level != null  and level != ''"> and level = #{level}</if>
+            <if test="dept != null  and dept != ''"> and dept = #{dept}</if>
+            <if test="major != null  and major != ''"> and major = #{major}</if>
+            <if test="clazz != null  and clazz != ''"> and clazz = #{clazz}</if>
+        </where>
+    </select>
+
+</mapper>

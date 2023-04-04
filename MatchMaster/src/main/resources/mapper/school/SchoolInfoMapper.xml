@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jamscoco.mapper.SchoolInfoMapper">
+
+    <resultMap type="com.jamscoco.domain.SchoolInfo" id="SchoolInfoResult">
+        <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="name"    column="name"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSchoolInfoVo">
+        select id, parent_id, name, del_flag, create_by, create_time, update_by, update_time from school_info
+    </sql>
+    <insert id="insetDeptSys">
+        insert into sys_dept (parent_id,ancestors,leader,dept_name,order_num,del_flag) values (100,'1,100',#{deptName},#{deptName},4,'0')
+    </insert>
+    <update id="updateFilePath">
+        update file_record set path = #{path} where name = #{name}
+    </update>
+    <delete id="clearTable">
+        delete from school_info
+    </delete>
+
+    <select id="selectSchoolInfoList" parameterType="com.jamscoco.domain.SchoolInfo" resultMap="SchoolInfoResult">
+        <include refid="selectSchoolInfoVo"/>
+        <where>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+    <select id="queryDeptSysIdByName" resultType="java.lang.Long">
+        select dept_id from sys_dept where dept_name = #{deptName}
+    </select>
+    <select id="selectFilePathByName" resultType="java.lang.String">
+        select path from file_record where name = #{name}
+    </select>
+
+</mapper>
