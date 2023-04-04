@@ -202,6 +202,12 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
         return baseMapper.setState(id,3 - roleType);
     }
 
+    @Override
+    public int removeWork(String id) {
+        baseMapper.deleteById(id);
+        return 0;
+    }
+
     private int moveUpSchool(String workId) {
         String nextId = baseMapper.selectNextIdOnUpSchoolSort(workId);
         if (nextId == null || "".equals(nextId)){

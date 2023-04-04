@@ -64,7 +64,7 @@ public class Works extends BaseEntity
     private Double schoolAverageScore;
 
     /** 作品状态（-1:报名国家平台截图审核失败；0：待审核截图；1：截图审核通过；2：院系已推荐；3：学校已推荐） */
-    @Excel(name = "作品状态", readConverterExp = "1:报名国家平台截图审核失败；0：待审核截图；1：截图审核通过；2：院系已推荐；3：学校已推荐")
+    @Excel(name = "作品状态", readConverterExp = "-1:报名国家平台截图审核失败；0：待审核截图；1：截图审核通过；2：院系已推荐；3：学校已推荐")
     private Long state;
 
     /** 国家平台报名成功截图 */
@@ -195,7 +195,7 @@ public class Works extends BaseEntity
 
     public Long getState()
     {
-        return state;
+        return this.state;
     }
     public void setScreenshot(String screenshot)
     {

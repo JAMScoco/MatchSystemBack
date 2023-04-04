@@ -155,6 +155,10 @@ public class WorksController extends BaseController {
         //4.该学生是否在本次赛事中提交过作品
         Works works = worksService.currentMatchWork(getUserId(), currentMatch.getId());
         if (works != null) {
+            if (works.getState() == -1L){
+                worksService.removeWork(works.getId());
+                return AjaxResult.success("您上次提交的作品审核未通过，请重新提交作品");
+            }
             return AjaxResult.success("您在本次大赛中已经提交过作品，请直接查看");
         }
         return AjaxResult.success("valid");
@@ -172,6 +176,11 @@ public class WorksController extends BaseController {
         Works works = worksService.currentMatchWork(getUserId(), currentMatch.getId());
         if (works == null) {
             return AjaxResult.success("您在本次大赛中还未提交过作品，请先提交作品");
+        }else {
+            if (works.getState() == -1L){
+                worksService.removeWork(works.getId());
+                return AjaxResult.success("您上次提交的作品审核未通过，请重新提交作品");
+            }
         }
         return AjaxResult.success("ok", worksService.getWorkInfoById(works.getId()));
     }

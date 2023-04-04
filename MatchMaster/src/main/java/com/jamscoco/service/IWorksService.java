@@ -61,4 +61,6 @@ public interface IWorksService extends IService<Works>
     int move(SortMoveDto sortMoveDto, Long roleType);
 
     int recommend(String id, Long roleType);
+
+    int removeWork(String id);
 }
