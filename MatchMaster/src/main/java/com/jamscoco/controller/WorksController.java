@@ -136,7 +136,7 @@ public class WorksController extends BaseController {
     public AjaxResult validCommit() {
         //1.学生是否完善个人信息
         SysUser user = getLoginUser().getUser();
-        if (user.getTrueName() == null || user.getSno() == null || user.getPhonenumber() == null) {
+        if (user.getTrueName() == null || user.getPhonenumber() == null || (!user.getLevel().equals("校外生") && user.getSno() == null)) {
             return AjaxResult.success("个人信息不完善，请先完善个人信息");
         }
         //2.当前是否有进行中的赛事

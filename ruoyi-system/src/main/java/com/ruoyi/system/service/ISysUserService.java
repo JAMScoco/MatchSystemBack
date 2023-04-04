@@ -215,4 +215,12 @@ public interface ISysUserService
     Map<String,Object> genAssignData(List<SysUser> reviewers, Long reviewNumber, List<String> waitReviewWorkIds);
 
     boolean registerStudent(SysUser sysUser);
+
+    boolean checkSnoDept(String sno, long deptId, String level);
+
+    String checkSnoUnique(String sno);
+
+    Map<String, String> queryUndergraduateInfo(String sno);
+
+    Map<String, String> queryGraduateInfo(String sno);
 }

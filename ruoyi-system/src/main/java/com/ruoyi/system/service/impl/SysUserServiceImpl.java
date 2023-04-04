@@ -5,10 +5,9 @@ import java.util.stream.Collectors;
 import javax.validation.Validator;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.redis.RedisCache;
-import lombok.val;
+import com.ruoyi.system.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +26,6 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
-import com.ruoyi.system.mapper.SysPostMapper;
-import com.ruoyi.system.mapper.SysRoleMapper;
-import com.ruoyi.system.mapper.SysUserMapper;
-import com.ruoyi.system.mapper.SysUserPostMapper;
-import com.ruoyi.system.mapper.SysUserRoleMapper;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
 
@@ -60,6 +54,9 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Autowired
     private SysUserPostMapper userPostMapper;
+
+    @Autowired
+    private SysDeptMapper deptMapper;
 
     @Autowired
     private ISysConfigService configService;
@@ -172,6 +169,28 @@ public class SysUserServiceImpl implements ISysUserService {
         return UserConstants.UNIQUE;
     }
 
+    @Override
+    public String checkSnoUnique(String sno) {
+        if (StringUtils.isEmpty(sno)){
+            return UserConstants.UNIQUE;
+        }
+        int count = userMapper.checkSnoUnique(sno);
+        if (count > 0) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
+    }
+
+    @Override
+    public Map<String, String> queryUndergraduateInfo(String sno) {
+        return userMapper.queryUndergraduateInfo(sno);
+    }
+
+    @Override
+    public Map<String, String> queryGraduateInfo(String sno) {
+        return userMapper.queryGraduateInfo(sno);
+    }
+
     /**
      * 校验手机号码是否唯一
      *
@@ -272,6 +291,21 @@ public class SysUserServiceImpl implements ISysUserService {
         }else {
             return false;
         }
+    }
+
+    @Override
+    public boolean checkSnoDept(String sno, long deptId, String level) {
+        if ("往届生".equals(level) || "校外生".equals(level)){
+            return true;
+        }
+        SysDept dept = deptMapper.selectDeptById(deptId);
+        if ("本科生在读".equals(level)){
+            return 1 == userMapper.queryUndergraduate(sno, dept.getDeptName());
+        }
+        if ("硕士研究生在读".equals(level) || "博士研究生在读".equals(level)){
+            return 1 == userMapper.queryGraduate(sno, dept.getDeptName());
+        }
+        return false;
     }
 
     /**

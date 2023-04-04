@@ -238,6 +238,25 @@
     </select>
     <select id="selectUserIdByUserName" resultType="java.lang.Long">
         select user_id from sys_user where user_name = #{userName} and del_flag = '0'    </select>
+    <select id="queryUndergraduate" resultType="java.lang.Integer">
+        select count(*) from school_info_undergraduate_student where sno = #{sno} and dept = #{deptName}
+    </select>
+    <select id="queryGraduate" resultType="java.lang.Integer">
+        select count(*) from school_info_garduate_student where sno = #{sno} and dept = #{deptName}
+    </select>
+    <select id="checkSnoUnique" resultType="java.lang.Integer">
+        select count(1)
+        from sys_user
+        where sno = #{sno}
+          and del_flag = '0'
+        limit 1
+    </select>
+    <select id="queryUndergraduateInfo" resultType="java.util.Map" parameterType="java.lang.String">
+        select name,sex,major,clazz from school_info_undergraduate_student where sno = #{sno}
+    </select>
+    <select id="queryGraduateInfo" resultType="java.util.Map">
+        select name,sex,major from school_info_garduate_student where sno = #{sno}
+    </select>
 
     <insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
         insert into sys_user(
@@ -246,6 +265,8 @@
         <if test="userName != null and userName != ''">user_name,</if>
         <if test="nickName != null and nickName != ''">nick_name,</if>
         <if test="trueName != null and trueName != ''">true_name,</if>
+        <if test="sno != null and sno != ''">sno,</if>
+        <if test="major != null and major != ''">major,</if>
         <if test="email != null and email != ''">email,</if>
         <if test="domain != null and domain != ''">domain,</if>
         <if test="level != null and level != ''">level,</if>
@@ -264,6 +285,8 @@
         <if test="userName != null and userName != ''">#{userName},</if>
         <if test="nickName != null and nickName != ''">#{nickName},</if>
         <if test="trueName != null and trueName != ''">#{trueName},</if>
+        <if test="sno != null and sno != ''">#{sno},</if>
+        <if test="major != null and major != ''">#{major},</if>
         <if test="email != null and email != ''">#{email},</if>
         <if test="domain != null and domain != ''">#{domain},</if>
         <if test="level != null and level != ''">#{level},</if>

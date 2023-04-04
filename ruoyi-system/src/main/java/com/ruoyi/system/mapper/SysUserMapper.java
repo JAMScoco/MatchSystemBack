@@ -1,7 +1,9 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -133,4 +135,14 @@ public interface SysUserMapper
     List<SysUser> selectReviewerList(SysUser user);
 
     Long selectUserIdByUserName(String userName);
+
+    int queryUndergraduate(@Param("sno") String sno, @Param("deptName") String deptName);
+
+    int queryGraduate(@Param("sno") String sno, @Param("deptName") String deptName);
+
+    int checkSnoUnique(String sno);
+
+    Map<String, String> queryUndergraduateInfo(String sno);
+
+    Map<String, String> queryGraduateInfo(String sno);
 }
