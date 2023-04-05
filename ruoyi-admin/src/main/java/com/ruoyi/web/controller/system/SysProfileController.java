@@ -97,6 +97,7 @@ public class SysProfileController extends BaseController
             sysUser.setLevel(user.getLevel());
             sysUser.setIsSchool(user.getIsSchool());
             sysUser.setMajor(user.getMajor());
+            sysUser.setRemark(user.getRemark());
             loginUser.setDeptId(user.getDeptId());
             tokenService.setLoginUser(loginUser);
             return AjaxResult.success();
