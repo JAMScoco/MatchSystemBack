@@ -173,7 +173,7 @@ public class MatchController extends BaseController {
         }
     }
 
-    @PreAuthorize("@ss.hasPermi('match:history:edit')")
+    @PreAuthorize("@ss.hasAnyRoles('department,school')")
     @PostMapping("/saveRecommendNum")
     public AjaxResult saveRecommendNum(@RequestParam("quota")Integer quota) {
         Match currentMatch = matchService.getCurrentMatch();

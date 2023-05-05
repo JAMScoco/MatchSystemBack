@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, name, logo, organizing_committee, address, postcode, email, expert_committee, qr_code, start_submit_time, end_submit_time, start_review_time_department, end_review_time_department, start_review_time_school, end_review_time_school, competition_notice, review_rules, student_operation_manual, competition_guide, college_school_operation_manual, business_cooperation_invitation, competition_review_manual, review_number, del_flag, create_by, create_time, update_by, update_time, remark, start_time, end_time from match_info
     </sql>
     <insert id="insertRecommendNum">
-        insert into match_recommend_quota(id,match_id,department_id,quota,remark,del_flag) values (#{id},#{matchId},#{dept},0,'推荐名额',0)
+        insert into match_recommend_quota(id,match_id,department_id,quota,remark,del_flag) values (#{id},#{matchId},#{dept},5,'推荐名额',0)
     </insert>
     <insert id="insertReviewCount">
         insert into match_recommend_quota(id,match_id,department_id,quota,remark,del_flag) values (#{id},#{matchId},#{dept},3,'评审数量',0)

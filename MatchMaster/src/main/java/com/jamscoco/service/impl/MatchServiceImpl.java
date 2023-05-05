@@ -123,6 +123,7 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
      * @return
      */
     @Override
+    @Transactional
     public boolean addMatchFile(MatchFileDto matchFileDto) {
         return baseMapper.addMatchFile(matchFileDto) > 0;
     }
@@ -134,6 +135,7 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
      * @return
      */
     @Override
+    @Transactional
     public boolean delMatchFile(MatchFileDto matchFileDto) {
         return baseMapper.delMatchFile(matchFileDto) > 0;
     }
@@ -145,7 +147,7 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
         if (quota == null){
             initRecommendNum(matchId, dept);
         }
-        return quota == null ? 0 : quota;
+        return quota == null ? 5 : quota;
     }
 
     @Transactional

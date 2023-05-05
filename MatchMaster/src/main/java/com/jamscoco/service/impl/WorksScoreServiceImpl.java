@@ -102,4 +102,34 @@ public class WorksScoreServiceImpl extends ServiceImpl<WorksScoreMapper, WorksSc
             return baseMapper.selectGoalDetailByWork(workId,0L);
         }
     }
+
+    @Override
+    public Map<String, Object> getIndexInfo(ScoreDto scoreDto) {
+        Map<String, Object> result = new HashMap<>();
+        scoreDto.setType("1");
+        List<ScoreVo> scoreDept = baseMapper.selectWorksScoreList(scoreDto);
+        int finishCountDept = 0;
+        for (ScoreVo scoreVo : scoreDept) {
+            if (scoreVo.getScoreDetail() != null && !scoreVo.getScoreDetail().equals("")){
+                finishCountDept++;
+            }
+        }
+        result.put("finishCountDept",finishCountDept);
+        result.put("allCountDept",scoreDept.size());
+
+        scoreDto.setType("2");
+        List<ScoreVo> scoreSchool = baseMapper.selectWorksScoreList(scoreDto);
+        int finishCountSchool = 0;
+        for (ScoreVo scoreVo : scoreSchool) {
+            if (scoreVo.getScoreDetail() != null && !scoreVo.getScoreDetail().equals("")){
+                finishCountSchool++;
+            }
+        }
+
+        result.put("finishCountSchool",finishCountSchool);
+        result.put("allCountSchool",scoreSchool.size());
+        return result;
+    }
+
+
 }
