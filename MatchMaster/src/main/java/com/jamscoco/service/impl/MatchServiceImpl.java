@@ -166,6 +166,11 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
         return baseMapper.updateReviewCount(matchId, String.valueOf(deptId), reviewCount);
     }
 
+    @Override
+    public List<Map<String, Object>> getHasRecommend(String id) {
+        return baseMapper.getHasRecommend(id);
+    }
+
     private void initReviewCount(String matchId, Long dept) {
         String id = UUID.randomUUID().toString().replace("-", "");
         baseMapper.insertReviewCount(matchId,String.valueOf(dept),id);

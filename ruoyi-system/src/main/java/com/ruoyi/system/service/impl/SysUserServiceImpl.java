@@ -191,6 +191,11 @@ public class SysUserServiceImpl implements ISysUserService {
         return userMapper.queryGraduateInfo(sno);
     }
 
+    @Override
+    public SysUser selectUserBySno(String sno) {
+        return userMapper.selectUserBySno(sno);
+    }
+
     /**
      * 校验手机号码是否唯一
      *

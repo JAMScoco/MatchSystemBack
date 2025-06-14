@@ -97,5 +97,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectReviewCount" resultType="java.lang.Integer">
         select quota from match_recommend_quota where match_id = #{matchId} and department_id = #{dept} and remark = '评审数量'
     </select>
+    <select id="getHasRecommend" resultType="java.util.Map">
+        SELECT d.dept_name, COUNT(ws.id) AS '已推荐'
+        FROM sys_dept d
+                 LEFT JOIN sys_user u ON u.dept_id = d.dept_id
+                 LEFT JOIN works ws ON ws.user_id = u.user_id
+            AND ws.match_id = #{matchId}
+            AND ws.state = 2
+        WHERE d.dept_id IN (
+            SELECT dept_id FROM sys_dept WHERE parent_id = 100 AND dept_id NOT IN (101, 102)
+        )
+        GROUP BY d.dept_name
+    </select>
 
 </mapper>

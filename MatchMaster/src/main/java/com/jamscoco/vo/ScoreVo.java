@@ -24,4 +24,6 @@ public class ScoreVo {
 
     @Excel(name = "评分详情")
     private String scoreDetail;
+    private String deptName;
+    private String departmentSort;
 }

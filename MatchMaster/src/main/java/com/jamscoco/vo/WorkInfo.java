@@ -30,9 +30,15 @@ public class WorkInfo {
     @Excel(name = "负责人学号")
     private String sno;
 
+    @Excel(name = "专业名称")
+    private String major;
+
     /**  负责人手机号 */
     @Excel(name = "负责人手机号")
     private String phonenumber;
+
+    @Excel(name = "负责人邮箱")
+    private String email;
 
     /**院系名称 */
     @Excel(name = "所属院系")
@@ -80,6 +86,7 @@ public class WorkInfo {
     private String screenshot;
 
     /** 作品概述 */
+    @Excel(name = "项目进展")
     private String overview;
 
     /** 院系评审的名次 */
@@ -97,4 +104,10 @@ public class WorkInfo {
     private List<WorksMember> memberList;
 
     private List<WorksTeacher> teacherList;
+
+    @Excel(name = "团队成员")
+    private String memberNames;
+
+    @Excel(name = "指导老师")
+    private String teacherNames;
 }

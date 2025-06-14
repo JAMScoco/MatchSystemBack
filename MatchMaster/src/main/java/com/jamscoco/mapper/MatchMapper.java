@@ -1,8 +1,11 @@
 package com.jamscoco.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.jamscoco.domain.Match;
 import com.jamscoco.dto.MatchFileDto;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -49,4 +52,7 @@ public interface MatchMapper extends BaseMapper<Match>
     int insertReviewCount(@Param("matchId") String matchId, @Param("dept")String dept,@Param("id") String id);
 
     Integer updateReviewCount(@Param("matchId")String matchId, @Param("deptId")String deptId,@Param("reviewCount")Integer reviewCount);
+
+    @MapKey("dept_name")
+    List<Map<String, Object>> getHasRecommend(@Param("matchId")String matchId);
 }

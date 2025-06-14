@@ -62,7 +62,7 @@ public class WorksScoreController extends BaseController {
         return getDataTable(list);
     }
 
-    @PreAuthorize("@ss.hasPermi('work:score:list')")
+    @Anonymous
     @GetMapping("/indexInfo")
     public AjaxResult indexInfo() {
         Match currentMatch = matchService.getCurrentMatch();
@@ -88,7 +88,7 @@ public class WorksScoreController extends BaseController {
         if (null == currentMatch) {
             return AjaxResult.error("当前没有正在进行的赛事");
         }
-        Map<String, Object> reviewDetails = worksScoreService.getReviewDetails(currentMatch.getId(), getRoleType());
+        Map<String, Object> reviewDetails = worksScoreService.getReviewDetails(currentMatch.getId(), getRoleType(),getUsername());
         return AjaxResult.success(reviewDetails);
 
     }

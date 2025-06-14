@@ -205,13 +205,15 @@ public class ReviewerController extends BaseController {
             return AjaxResult.success("报名时间未结束");
         }
         //3. 是否还有作品国家报名截图未审核
+        long roleType = getRoleType();
         Works works = new Works();
         works.setState(0L);
+        works.setMatchId(currentMatch.getId());
+        works.setDeptId(String.valueOf(getDeptId()));
         List<WorkInfo> list = worksService.selectWorksList(works);
         if (list.size() > 0) {
             return AjaxResult.success("还有作品国家报名截图未审核");
         }
-        long roleType = getRoleType();
         if (roleType == 0L){
             if (DateUtil.compare(now, currentMatch.getEndReviewTimeDepartment()) < 0) {
                 return AjaxResult.success("院系评审未结束");

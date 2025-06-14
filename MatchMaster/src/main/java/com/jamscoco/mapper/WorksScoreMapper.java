@@ -28,7 +28,7 @@ public interface WorksScoreMapper extends BaseMapper<WorksScore>
 
     Integer check(@Param("id")String id,@Param("type") int i);
 
-    List<ScoreVo> getReviewDetails(@Param("matchId") String matchId,@Param("type") Long type);
+    List<ScoreVo> getReviewDetails(@Param("matchId") String matchId, @Param("type") Long type,@Param("username") String username);
 
     int setScoreDetails(ScoreSubmitDto scoreSubmitDto);
 

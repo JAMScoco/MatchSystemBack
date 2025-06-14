@@ -32,5 +32,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             and type = #{type} and owner = #{owner}
         </where>
     </select>
+    <select id="getAllNews" resultType="com.jamscoco.domain.News">
+        select id,title,create_time from match_news where type = #{type} order by create_time desc
+    </select>
 
 </mapper>

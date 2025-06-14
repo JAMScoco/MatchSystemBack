@@ -22,6 +22,8 @@
                w.create_time,
                u.true_name,
                u.sno,
+               u.major,
+               u.email,
                u.phonenumber,
                u.level,
                d.dept_name,

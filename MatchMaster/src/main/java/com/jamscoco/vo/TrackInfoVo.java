@@ -14,5 +14,6 @@ public class TrackInfoVo {
     private String trackId;
     private String name;
     private String remark;
+    private boolean hasTemplate;
     private List<TrackInfoVo> children;
 }

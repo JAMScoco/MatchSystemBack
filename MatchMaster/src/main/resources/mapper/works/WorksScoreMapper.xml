@@ -5,10 +5,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.jamscoco.mapper.WorksScoreMapper">
 
     <sql id="selectWorksScoreVo">
-        select ws.id, ws.work_id, ws.user_id, w.name, su.true_name, ws.score_detail
+        select ws.id, ws.work_id, ws.user_id, w.name, su.true_name, ws.score_detail,sd.dept_name,w.department_sort
         from works_score as ws
                  left join works w on w.id = ws.work_id
                  left join sys_user su on ws.user_id = su.user_id
+                 left join sys_user us on w.user_id = us.user_id
+                 left join sys_dept sd on sd.dept_id = us.dept_id
     </sql>
     <update id="setScoreDetails">
         update works_score
@@ -36,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getReviewDetails" resultType="com.jamscoco.vo.ScoreVo">
         <include refid="selectWorksScoreVo"/>
         where w.match_id = #{matchId}
-        and ws.type = #{type}
+        and ws.type = #{type} and ws.create_by = #{username}
         order by ws.work_id
     </select>
     <select id="selectScoreDetailsByWorkByType" resultType="java.lang.String">

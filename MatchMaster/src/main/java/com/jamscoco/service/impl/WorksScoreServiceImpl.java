@@ -54,8 +54,8 @@ public class WorksScoreServiceImpl extends ServiceImpl<WorksScoreMapper, WorksSc
     }
 
     @Override
-    public Map<String,Object> getReviewDetails(String matchId, Long type) {
-        List<ScoreVo> query = baseMapper.getReviewDetails(matchId,type);
+    public Map<String,Object> getReviewDetails(String matchId, Long type, String username) {
+        List<ScoreVo> query = baseMapper.getReviewDetails(matchId,type,username);
         if (query.size() == 0 ){
             return null;
         }

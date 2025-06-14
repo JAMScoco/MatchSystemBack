@@ -66,4 +66,6 @@ public interface IMatchService extends IService<Match>
     Integer queryReviewCount(String id, Long deptId);
 
     Integer updateReviewCount(String matchId, Long deptId, Integer reviewCount);
+
+    List<Map<String, Object>> getHasRecommend(String id);
 }

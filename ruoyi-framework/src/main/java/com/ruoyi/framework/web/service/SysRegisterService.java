@@ -50,6 +50,8 @@ public class SysRegisterService {
 
         if (StringUtils.isEmpty(username)) {
             msg = "用户名不能为空";
+        } else if (StringUtils.isEmpty(registerBody.getPhoneNumber())) {
+            msg = "手机号不能为空";
         } else if (StringUtils.isEmpty(password)) {
             msg = "用户密码不能为空";
         } else if (StringUtils.isEmpty(registerBody.getSno()) && !registerBody.getLevel().equals("校外生")) {
@@ -75,6 +77,7 @@ public class SysRegisterService {
             sysUser.setDeptId(registerBody.getDeptId());
             sysUser.setLevel(registerBody.getLevel());
             sysUser.setSno(registerBody.getSno());
+            sysUser.setPhonenumber(registerBody.getPhoneNumber());
 
             if ("本科生在读".equals(registerBody.getLevel())) {
                 Map<String, String> info = userService.queryUndergraduateInfo(registerBody.getSno());

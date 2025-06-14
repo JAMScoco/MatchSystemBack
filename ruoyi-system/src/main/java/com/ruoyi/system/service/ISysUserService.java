@@ -223,4 +223,6 @@ public interface ISysUserService
     Map<String, String> queryUndergraduateInfo(String sno);
 
     Map<String, String> queryGraduateInfo(String sno);
+
+    SysUser selectUserBySno(String sno);
 }

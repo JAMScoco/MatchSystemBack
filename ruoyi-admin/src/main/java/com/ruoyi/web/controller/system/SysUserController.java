@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.annotation.Anonymous;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -155,7 +156,7 @@ public class SysUserController extends BaseController {
     /**
      * 删除用户
      */
-    @PreAuthorize("@ss.hasPermi('system:user:remove')")
+    @PreAuthorize("@ss.hasAnyRoles('department,school')")
     @Log(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
     public AjaxResult remove(@PathVariable Long[] userIds) {
@@ -168,7 +169,7 @@ public class SysUserController extends BaseController {
     /**
      * 重置密码
      */
-    @PreAuthorize("@ss.hasPermi('system:user:resetPwd')")
+    @PreAuthorize("@ss.hasAnyRoles('department,school')")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd")
     public AjaxResult resetPwd(@RequestBody SysUser user) {
@@ -177,6 +178,24 @@ public class SysUserController extends BaseController {
         user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
         user.setUpdateBy(getUsername());
         return toAjax(userService.resetPwd(user));
+    }
+
+    /**
+     * 学生重置密码
+     */
+    @Anonymous
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @PostMapping("/forget_password")
+    public AjaxResult forgetPassword(@RequestBody SysUser user) {
+        userService.checkUserAllowed(user);
+        SysUser u = userService.selectUserBySno(user.getSno());
+        if(null == u){
+            return AjaxResult.error("该学号未注册！");
+        }else{
+            u.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
+            userService.resetUserPwd(u.getUserName(),u.getPassword());
+            return AjaxResult.success(u.getUserName());
+        }
     }
 
     /**

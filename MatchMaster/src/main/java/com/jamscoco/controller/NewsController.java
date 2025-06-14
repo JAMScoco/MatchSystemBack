@@ -1,12 +1,11 @@
 package com.jamscoco.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jamscoco.domain.Match;
 import com.jamscoco.service.IMatchService;
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +65,13 @@ public class NewsController extends BaseController
         return getDataTable(list);
     }
 
+    @Anonymous
+    @GetMapping("/getAllNews")
+    public AjaxResult getAllNews(){
+        Map<String,Object> result = newsService.getAllNews();
+        return AjaxResult.success(result);
+    }
+
     /**
      * 导出动态管理列表
      */
@@ -83,7 +89,7 @@ public class NewsController extends BaseController
     /**
      * 获取动态管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('school:news:query')")
+    @Anonymous
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") String id)
     {

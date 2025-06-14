@@ -7,6 +7,8 @@ import cn.hutool.core.date.DateUtil;
 import com.jamscoco.domain.Match;
 import com.jamscoco.dto.SortMoveDto;
 import com.jamscoco.service.IMatchService;
+import com.jamscoco.service.IWorksScoreService;
+import com.jamscoco.vo.ScoreVo;
 import com.jamscoco.vo.WorkInfo;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -38,6 +40,10 @@ import com.ruoyi.common.core.page.TableDataInfo;
 @RestController
 @RequestMapping("/works/work")
 public class WorksController extends BaseController {
+
+    @Autowired
+    private IWorksScoreService worksScoreService;
+
     @Autowired
     private IWorksService worksService;
 
@@ -72,12 +78,15 @@ public class WorksController extends BaseController {
     @Log(title = "作品", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, Works works) {
+        Match currentMatch = matchService.getCurrentMatch();
         //若是院系管理员，设置筛选条件为本院系
         long roleType = getRoleType();
         if (roleType == 1L) {
             works.setDeptId(String.valueOf(getDeptId()));
+            works.setMatchId(currentMatch.getId());
         }
-        List<WorkInfo> list = worksService.selectWorksList(works);
+        works.setMatchId(currentMatch.getId());
+        List<WorkInfo> list = worksService.selectWorksListExport(works);
         ExcelUtil<WorkInfo> util = new ExcelUtil<WorkInfo>(WorkInfo.class);
         util.exportExcel(response, list, "作品数据");
     }
@@ -156,7 +165,7 @@ public class WorksController extends BaseController {
         Works works = worksService.currentMatchWork(getUserId(), currentMatch.getId());
         if (works != null) {
             if (works.getState() == -1L){
-                worksService.removeWork(works.getId());
+//                worksService.removeWork(works.getId());
                 return AjaxResult.success("您上次提交的作品审核未通过，请重新提交作品");
             }
             return AjaxResult.success("您在本次大赛中已经提交过作品，请直接查看");
@@ -246,10 +255,26 @@ public class WorksController extends BaseController {
         Date now = new Date();
         Long roleType = getRoleType();
         if (roleType == 1L) {
-            //当前是否在院系评审结束后
-            if (DateUtil.compare(now, currentMatch.getEndReviewTimeDepartment()) < 0) {
-                return AjaxResult.success("院系评审未结束，请评审结束后查看评审结果");
+            Map<String, Object> reviewDetails = worksScoreService.getReviewDetails(currentMatch.getId(), getRoleType(),getUsername());
+            List<Map<String,Object>> target =(List<Map<String,Object>>)reviewDetails.get("target");
+            for (Map<String, Object> map : target) {
+                int len = map.keySet().size() - 1;
+                for (int i = 0; i < len; i++) {
+                    if(((ScoreVo)map.get("score"+i)).getScoreDetail()==null){
+                        return AjaxResult.success("评审未结束，请评审专家评审完成后查看评审结果");
+                    }
+                }
             }
+            List<WorkInfo> reviewResult = worksService.getReviewResult(currentMatch.getId(), roleType, getDeptId());
+            Map<String, Object> result = new HashMap<>();
+            result.put("result", reviewResult);
+            result.put("hasRecommended", countHasRecommended(reviewResult, roleType));
+            return AjaxResult.success("ok", result);
+            //当前是否在院系评审结束后
+            /*if (DateUtil.compare(now, currentMatch.getEndReviewTimeDepartment()) < 0) {
+                return AjaxResult.success("院系评审未结束，请评审结束后查看评审结果");
+            }*/
+
         } else {
             //当前是否在校级评审结束后
             if (DateUtil.compare(now, currentMatch.getEndReviewTimeSchool()) < 0) {
@@ -302,5 +327,17 @@ public class WorksController extends BaseController {
     @PostMapping(value = "recommend/{id}")
     public AjaxResult recommend(@PathVariable("id") String id) {
         return AjaxResult.success(worksService.recommend(id,getRoleType()));
+    }
+
+    @PreAuthorize("@ss.hasRole('student')")
+    @PostMapping(value = "change/{id}")
+    public AjaxResult changeWorks(@PathVariable("id") String id) {
+        WorkInfo work = worksService.getWorkInfoById(id);
+        if(work.getState().equals(0L)){
+            worksService.removeWork(id);
+            return AjaxResult.success("ok");
+        }else {
+            return AjaxResult.success("院系管理员已审核通过，无法修改。如需修改，请联系院系管理员。");
+        }
     }
 }

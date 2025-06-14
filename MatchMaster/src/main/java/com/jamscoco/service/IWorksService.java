@@ -23,6 +23,8 @@ public interface IWorksService extends IService<Works>
      */
     public List<WorkInfo> selectWorksList(Works works);
 
+    public List<WorkInfo> selectWorksListExport(Works works);
+
     /**
      * 添加作品
      * @param works 作品

@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jamscoco.domain.MatchCategory;
 import com.jamscoco.domain.MatchGroup;
+import com.jamscoco.domain.MatchReviewTemplate;
 import com.jamscoco.mapper.MatchCategoryMapper;
 import com.jamscoco.mapper.MatchGroupMapper;
+import com.jamscoco.mapper.MatchReviewTemplateMapper;
 import com.jamscoco.vo.TrackInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,8 @@ public class MatchTrackServiceImpl extends ServiceImpl<MatchTrackMapper, MatchTr
     private MatchGroupMapper matchGroupMapper;
     @Autowired
     private MatchCategoryMapper matchCategoryMapper;
-
+    @Autowired
+    private MatchReviewTemplateMapper matchReviewTemplateMapper;
     /**
      * 查询赛事对应的赛道信息列表
      *
@@ -104,6 +107,9 @@ public class MatchTrackServiceImpl extends ServiceImpl<MatchTrackMapper, MatchTr
                 trackInfoVoGroup.setTrackId(matchTrack.getId());
                 trackInfoVoGroup.setName(matchGroup.getName());
                 trackInfoVoGroup.setRemark(matchGroup.getRemark());
+                MatchReviewTemplate template =  new MatchReviewTemplate();
+                template.setGroupId(matchGroup.getId());
+                trackInfoVoGroup.setHasTemplate(!matchReviewTemplateMapper.selectMatchReviewTemplateList(template).isEmpty());
                 groupChildrenList.add(trackInfoVoGroup);
             }
             TrackInfoVo groupInfo = new TrackInfoVo();

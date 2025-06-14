@@ -4,6 +4,7 @@ import java.util.List;
 import com.jamscoco.domain.News;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 动态管理Mapper接口
@@ -22,4 +23,5 @@ public interface NewsMapper extends BaseMapper<News>
      */
     public List<News> selectNewsList(News news);
 
+    List<News> getAllNews(@Param("type") long type);
 }

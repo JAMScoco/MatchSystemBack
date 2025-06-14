@@ -208,6 +208,11 @@
         where u.user_name = #{userName} and u.del_flag = '0'
     </select>
 
+    <select id="selectUserBySno" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.sno = #{sno} and u.del_flag = '0'
+    </select>
+
     <select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
         <include refid="selectUserVo"/>
         where u.user_id = #{userId}
@@ -372,7 +377,7 @@
     </delete>
 
     <delete id="deleteUserByIds" parameterType="Long">
-        update sys_user set del_flag = '2' where user_id in
+        delete from sys_user where user_id in
         <foreach collection="array" item="userId" open="(" separator="," close=")">
             #{userId}
         </foreach>

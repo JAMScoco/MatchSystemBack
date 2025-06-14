@@ -62,6 +62,32 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
     }
 
     @Override
+    public List<WorkInfo> selectWorksListExport(Works works) {
+        List<WorkInfo> infoList = baseMapper.selectWorksList(works);
+        for (WorkInfo info : infoList) {
+            info.setMemberList(memberMapper.getMembersByWorkId(info.getId()));
+            info.setTeacherList(teacherMapper.getTeachersByWorkId(info.getId()));
+            StringBuilder memNames = new StringBuilder();
+            StringBuilder teaNames = new StringBuilder();
+            for (WorksMember worksMember : info.getMemberList()) {
+                memNames.append(worksMember.getName()).append(";");
+            }
+            for (WorksTeacher worksTeacher : info.getTeacherList()) {
+                teaNames.append(worksTeacher.getName()).append(";");
+            }
+            if (memNames.length() > 0) {
+                memNames.setLength(memNames.length() - 1);
+            }
+            if (teaNames.length() > 0) {
+                teaNames.setLength(teaNames.length() - 1);
+            }
+            info.setMemberNames(memNames.toString());
+            info.setTeacherNames(teaNames.toString());
+        }
+        return infoList;
+    }
+
+    @Override
     @Transactional
     public String addWorks(Works works) {
         String invalidMemberResult = invalidMember(works.getMemberList());
@@ -166,7 +192,7 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
                     return workInfos;
                 }
             } else {
-                workInfos.removeIf(e->e.getState().equals(-1L) || e.getState().equals(0L) || e.getState().equals(1L));
+                workInfos.removeIf(e -> e.getState().equals(-1L) || e.getState().equals(0L) || e.getState().equals(1L));
                 if (workInfos.get(0).getSchoolSort() != null) {
                     workInfos.sort(Comparator.comparingLong(WorkInfo::getSchoolSort));
                     return workInfos;
@@ -182,16 +208,16 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
     @Override
     @Transactional
     public int move(SortMoveDto sortMoveDto, Long roleType) {
-        if(roleType == 1L){
-           if(sortMoveDto.getType().equals(SortMoveDto.SORT_UP)){
-               return moveUpDepartment(sortMoveDto.getWorkId());
-           }else{
-               return moveDownDepartment(sortMoveDto.getWorkId());
-           }
-        }else {
-            if(sortMoveDto.getType().equals(SortMoveDto.SORT_UP)){
+        if (roleType == 1L) {
+            if (sortMoveDto.getType().equals(SortMoveDto.SORT_UP)) {
+                return moveUpDepartment(sortMoveDto.getWorkId());
+            } else {
+                return moveDownDepartment(sortMoveDto.getWorkId());
+            }
+        } else {
+            if (sortMoveDto.getType().equals(SortMoveDto.SORT_UP)) {
                 return moveUpSchool(sortMoveDto.getWorkId());
-            }else{
+            } else {
                 return moveDownSchool(sortMoveDto.getWorkId());
             }
         }
@@ -199,7 +225,7 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
 
     @Override
     public int recommend(String id, Long roleType) {
-        return baseMapper.setState(id,3 - roleType);
+        return baseMapper.setState(id, 3 - roleType);
     }
 
     @Override
@@ -210,38 +236,47 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
 
     private int moveUpSchool(String workId) {
         String nextId = baseMapper.selectNextIdOnUpSchoolSort(workId);
-        if (nextId == null || "".equals(nextId)){
+        if (nextId == null || "".equals(nextId)) {
             return 0;
         }
-        return baseMapper.exchangeSchoolSort(workId,nextId);
+        return baseMapper.exchangeSchoolSort(workId, nextId);
     }
 
     private int moveDownSchool(String workId) {
         String nextId = baseMapper.selectNextIdOnDownSchoolSort(workId);
-        if (nextId == null || "".equals(nextId)){
+        if (nextId == null || "".equals(nextId)) {
             return 0;
         }
-        return baseMapper.exchangeSchoolSort(workId,nextId);
+        return baseMapper.exchangeSchoolSort(workId, nextId);
     }
 
     private int moveDownDepartment(String workId) {
         String nextId = baseMapper.selectNextIdOnDownDepartment(workId);
-        if (nextId == null || "".equals(nextId)){
+        if (nextId == null || "".equals(nextId)) {
             return 0;
         }
-        return baseMapper.exchangeDepartmentSort(workId,nextId);
+        return baseMapper.exchangeDepartmentSort(workId, nextId);
     }
 
     private int moveUpDepartment(String workId) {
         String nextId = baseMapper.selectNextIdOnUpDepartment(workId);
-        if (nextId == null || "".equals(nextId)){
+        if (nextId == null || "".equals(nextId)) {
             return 0;
         }
-        return baseMapper.exchangeDepartmentSort(workId,nextId);
+        return baseMapper.exchangeDepartmentSort(workId, nextId);
     }
 
     private void setScore(List<WorkInfo> workInfos, Long roleType) {
         for (WorkInfo workInfo : workInfos) {
+            if (roleType == 1L) {
+                if (workInfo.getDepartmentAverageScore() != null) {
+                    continue;
+                }
+            } else {
+                if (workInfo.getSchoolAverageScore() != null) {
+                    continue;
+                }
+            }
             List<String> score_details = worksScoreMapper.selectScoreDetailsByWorkByType(workInfo.getId(), roleType);
             BigDecimal value = BigDecimal.ZERO;
             for (String score_detail : score_details) {
@@ -249,6 +284,7 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
                 value = value.add(total);
             }
             if (roleType == 1L) {
+                System.out.println(workInfo.getId()+"###################"+score_details.size());
                 workInfo.setDepartmentAverageScore(value.divide(new BigDecimal(score_details.size()), 2, RoundingMode.HALF_UP).doubleValue());
                 baseMapper.updateDepartmentAverageScore(workInfo.getId(), workInfo.getDepartmentAverageScore());
             } else {
@@ -262,14 +298,14 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
         if (roleType == 1L) {
             workInfos.sort(Comparator.comparingDouble(WorkInfo::getDepartmentAverageScore).reversed());
             for (int i = 0; i < workInfos.size(); i++) {
-                workInfos.get(i).setDepartmentSort(i+1L);
-                baseMapper.updateDepartmentSort(workInfos.get(i).getId(), i+1);
+                workInfos.get(i).setDepartmentSort(i + 1L);
+                baseMapper.updateDepartmentSort(workInfos.get(i).getId(), i + 1);
             }
         } else {
             workInfos.sort(Comparator.comparingDouble(WorkInfo::getSchoolAverageScore).reversed());
             for (int i = 0; i < workInfos.size(); i++) {
-                workInfos.get(i).setSchoolSort(i+1L);
-                baseMapper.updateSchoolSort(workInfos.get(i).getId(), i+1);
+                workInfos.get(i).setSchoolSort(i + 1L);
+                baseMapper.updateSchoolSort(workInfos.get(i).getId(), i + 1);
             }
         }
     }
@@ -292,45 +328,43 @@ public class WorksServiceImpl extends ServiceImpl<WorksMapper, Works> implements
     }
 
     private String invalidTeacher(List<WorksTeacher> teacherList) {
-        for (WorksTeacher teacher : teacherList) {
-            QueryWrapper<WorksTeacher> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("name", teacher.getName());
-            queryWrapper.eq("department_id", teacher.getDepartmentId());
-            queryWrapper.eq("phone", teacher.getPhone());
-            WorksTeacher worksTeacher = teacherMapper.selectOne(queryWrapper);
-            //欲添加指导老师已在库中
-            if (worksTeacher != null) {
-                int joinNumber = teacherMapper.getJoinNumber(worksTeacher.getId());
-                //TODO 数量待定
-                if (joinNumber >= 2) {
-                    return worksTeacher.getName() + "老师已经达到了可参与项目数量上限，请检查项目指导老师";
-                } else {
-                    teacher.setId(worksTeacher.getId());
-                }
-            }
-        }
+//        for (WorksTeacher teacher : teacherList) {
+//            QueryWrapper<WorksTeacher> queryWrapper = new QueryWrapper<>();
+//            queryWrapper.eq("name", teacher.getName());
+//            queryWrapper.eq("department_id", teacher.getDepartmentId());
+//            queryWrapper.eq("phone", teacher.getPhone());
+//            WorksTeacher worksTeacher = teacherMapper.selectOne(queryWrapper);
+//            //欲添加指导老师已在库中
+//            if (worksTeacher != null) {
+//                int joinNumber = teacherMapper.getJoinNumber(worksTeacher.getId());
+//                if (joinNumber >= 2) {
+//                    return worksTeacher.getName() + "老师已经达到了可参与项目数量上限，请检查项目指导老师";
+//                } else {
+//                    teacher.setId(worksTeacher.getId());
+//                }
+//            }
+//        }
         return Constants.SUCCESS;
     }
 
     private String invalidMember(List<WorksMember> memberList) {
-        for (WorksMember member : memberList) {
-            QueryWrapper<WorksMember> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("name", member.getName());
-            queryWrapper.eq("sno", member.getSno());
-            queryWrapper.eq("department_id", member.getDepartmentId());
-            queryWrapper.eq("phone", member.getPhone());
-            WorksMember worksMember = memberMapper.selectOne(queryWrapper);
-            //欲添加成员已在库中
-            if (worksMember != null) {
-                int joinNumber = memberMapper.getJoinNumber(worksMember.getId());
-                //TODO 数量待定
-                if (joinNumber >= 2) {
-                    return worksMember.getName() + "同学已经达到了可参与项目数量上限，请检查项目成员";
-                } else {
-                    member.setId(worksMember.getId());
-                }
-            }
-        }
+//        for (WorksMember member : memberList) {
+//            QueryWrapper<WorksMember> queryWrapper = new QueryWrapper<>();
+//            queryWrapper.eq("name", member.getName());
+//            queryWrapper.eq("sno", member.getSno());
+//            queryWrapper.eq("department_id", member.getDepartmentId());
+//            queryWrapper.eq("phone", member.getPhone());
+//            WorksMember worksMember = memberMapper.selectOne(queryWrapper);
+//            //欲添加成员已在库中
+//            if (worksMember != null) {
+//                int joinNumber = memberMapper.getJoinNumber(worksMember.getId());
+//                if (joinNumber >= 2) {
+//                    return worksMember.getName() + "同学已经达到了可参与项目数量上限，请检查项目成员";
+//                } else {
+//                    member.setId(worksMember.getId());
+//                }
+//            }
+//        }
         return Constants.SUCCESS;
     }
 }

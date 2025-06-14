@@ -27,7 +27,7 @@ public interface IWorksScoreService extends IService<WorksScore>
 
     boolean checkGenAssign(List<String> waitReviewWorkIds);
 
-    Map<String,Object> getReviewDetails(String matchId, Long type);
+    Map<String,Object> getReviewDetails(String matchId, Long type, String username);
 
     int submitScore(ScoreSubmitDto scoreSubmitDto);
 

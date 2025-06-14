@@ -11,6 +11,8 @@ public class RegisterBody extends LoginBody
     private String sno;
     private Long deptId;
 
+    private String phoneNumber;
+
     public String getLevel() {
         return level;
     }
@@ -33,5 +35,13 @@ public class RegisterBody extends LoginBody
 
     public void setDeptId(Long deptId) {
         this.deptId = deptId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

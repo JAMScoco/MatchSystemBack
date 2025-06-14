@@ -69,8 +69,13 @@ public class LogAspect
     {
         try
         {
+            LoginUser loginUser = null;
             // 获取当前的用户
-            LoginUser loginUser = SecurityUtils.getLoginUser();
+            try {
+                loginUser = SecurityUtils.getLoginUser();
+            }catch (Exception x){
+
+            }
 
             // *========数据库日志=========*//
             SysOperLog operLog = new SysOperLog();
@@ -82,6 +87,8 @@ public class LogAspect
             if (loginUser != null)
             {
                 operLog.setOperName(loginUser.getUsername());
+            }else {
+                operLog.setOperName("admin");
             }
 
             if (e != null)

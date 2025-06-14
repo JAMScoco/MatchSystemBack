@@ -159,6 +159,18 @@ public class MatchController extends BaseController {
     }
 
     @Anonymous
+    @GetMapping("/getHasRecommend")
+    public AjaxResult getHasRecommend() {
+        Match currentMatch = matchService.getCurrentMatch();
+        if (null == currentMatch) {
+            return AjaxResult.error("当前没有正在进行的赛事，请新增赛事！");
+        } else {
+            List<Map<String,Object>> result = matchService.getHasRecommend(currentMatch.getId());
+            return AjaxResult.success(result);
+        }
+    }
+
+    @Anonymous
     @GetMapping("/queryRecommendNum")
     public AjaxResult queryRecommendNum() {
         Match currentMatch = matchService.getCurrentMatch();
