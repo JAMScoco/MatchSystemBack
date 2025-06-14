@@ -211,7 +211,7 @@ public class ReviewerController extends BaseController {
         works.setMatchId(currentMatch.getId());
         works.setDeptId(String.valueOf(getDeptId()));
         List<WorkInfo> list = worksService.selectWorksList(works);
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             return AjaxResult.success("还有作品国家报名截图未审核");
         }
         if (roleType == 0L){

@@ -164,9 +164,9 @@ public class WorksController extends BaseController {
         //4.该学生是否在本次赛事中提交过作品
         Works works = worksService.currentMatchWork(getUserId(), currentMatch.getId());
         if (works != null) {
-            if (works.getState() == -1L){
+            if (works.getState() == -1L) {
 //                worksService.removeWork(works.getId());
-                return AjaxResult.success("您上次提交的作品审核未通过，请重新提交作品");
+                return AjaxResult.success("您上次提交的作品审核未通过，请重新上传国家平台报名成功截图");
             }
             return AjaxResult.success("您在本次大赛中已经提交过作品，请直接查看");
         }
@@ -185,10 +185,9 @@ public class WorksController extends BaseController {
         Works works = worksService.currentMatchWork(getUserId(), currentMatch.getId());
         if (works == null) {
             return AjaxResult.success("您在本次大赛中还未提交过作品，请先提交作品");
-        }else {
-            if (works.getState() == -1L){
-                worksService.removeWork(works.getId());
-                return AjaxResult.success("您上次提交的作品审核未通过，请重新提交作品");
+        } else {
+            if (works.getState() == -1L) {
+                return AjaxResult.success("您上次提交的作品审核未通过，请修改国家平台报名成功截图", worksService.getWorkInfoById(works.getId()));
             }
         }
         return AjaxResult.success("ok", worksService.getWorkInfoById(works.getId()));
@@ -233,9 +232,9 @@ public class WorksController extends BaseController {
             return AjaxResult.success("当前没有正在进行中的赛事");
         }
         Long roleType = getRoleType();
-        if (roleType == 1L){
+        if (roleType == 1L) {
             return AjaxResult.success(worksService.waitReviewWorksDepartment(getDeptId(), currentMatch.getId()));
-        }else {
+        } else {
             return AjaxResult.success(worksService.waitReviewWorksSchool(currentMatch.getId()));
         }
 
@@ -255,12 +254,15 @@ public class WorksController extends BaseController {
         Date now = new Date();
         Long roleType = getRoleType();
         if (roleType == 1L) {
-            Map<String, Object> reviewDetails = worksScoreService.getReviewDetails(currentMatch.getId(), getRoleType(),getUsername());
-            List<Map<String,Object>> target =(List<Map<String,Object>>)reviewDetails.get("target");
+            Map<String, Object> reviewDetails = worksScoreService.getReviewDetails(currentMatch.getId(), getRoleType(), getUsername());
+            if (reviewDetails == null){
+                return AjaxResult.success("评审任务未生成");
+            }
+            List<Map<String, Object>> target = (List<Map<String, Object>>) reviewDetails.get("target");
             for (Map<String, Object> map : target) {
                 int len = map.keySet().size() - 1;
                 for (int i = 0; i < len; i++) {
-                    if(((ScoreVo)map.get("score"+i)).getScoreDetail()==null){
+                    if (((ScoreVo) map.get("score" + i)).getScoreDetail() == null) {
                         return AjaxResult.success("评审未结束，请评审专家评审完成后查看评审结果");
                     }
                 }
@@ -326,18 +328,46 @@ public class WorksController extends BaseController {
     @PreAuthorize("@ss.hasAnyPermi('works:work:query,review:work:detail')")
     @PostMapping(value = "recommend/{id}")
     public AjaxResult recommend(@PathVariable("id") String id) {
-        return AjaxResult.success(worksService.recommend(id,getRoleType()));
+        return AjaxResult.success(worksService.recommend(id, getRoleType()));
     }
 
     @PreAuthorize("@ss.hasRole('student')")
     @PostMapping(value = "change/{id}")
     public AjaxResult changeWorks(@PathVariable("id") String id) {
         WorkInfo work = worksService.getWorkInfoById(id);
-        if(work.getState().equals(0L)){
+        if (work.getState().equals(0L)) {
             worksService.removeWork(id);
             return AjaxResult.success("ok");
-        }else {
+        } else {
             return AjaxResult.success("院系管理员已审核通过，无法修改。如需修改，请联系院系管理员。");
         }
+    }
+
+    @PreAuthorize("@ss.hasRole('student')")
+    @PostMapping(value = "changeName/{id}")
+    public AjaxResult changeWorksName(@PathVariable("id") String id, @RequestBody Map<String, String> data) {
+        Works work = worksService.getById(id);
+        String value = data.get("value");
+        String key = data.get("key");
+        if (key.equals("name")) {
+            work.setName(value);
+        }
+        if (key.equals("ScreenShot")) {
+            work.setScreenshot(value);
+        }
+        if (key.equals("overview")) {
+            work.setOverview(value);
+        }
+        if (key.equals("remark")) {
+            work.setRemark(value);
+        }
+        if (key.equals("report")) {
+            work.setReport(value);
+        }
+        if (key.equals("attachment")) {
+            work.setAttachment(value);
+        }
+        worksService.updateById(work);
+        return AjaxResult.success(value);
     }
 }
